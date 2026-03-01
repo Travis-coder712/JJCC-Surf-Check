@@ -225,6 +225,40 @@
     { title: 'View from a Blue Moon', year: 2015, desc: 'John John Florence in the first-ever 4K surf film — pure stoke', stream: 'Apple TV (rent)' },
   ];
 
+  // ── Snorkelling Spots ────────────────────────────────────────
+  const SNORKEL_SPOTS = [
+    { id: 'snork-point-danger', name: 'Point Danger Marine Sanctuary', location: 'Torquay / Jan Juc', lat: -38.3407, lng: 144.3269, desc: 'A 21-hectare sanctuary around a limestone headland with reefs to 7m depth. Home to 96+ species of sea slugs, abundant fish and invertebrates on shallow reef platforms.', driveMinutes: 3 },
+    { id: 'snork-barwon-bluff', name: 'Barwon Bluff Marine Sanctuary', location: 'Barwon Heads', lat: -38.2908, lng: 144.5017, desc: 'Kelp forests, sandstone arches, sponge gardens and shipwreck remains. Great for rays, varied carpetsharks and schools of fish in relatively sheltered waters.', driveMinutes: 20 },
+    { id: 'snork-jarosite', name: 'Jarosite Reef (Point Addis MNP)', location: 'Between Bells & Anglesea', lat: -38.3614, lng: 144.2785, desc: 'Within the 4600-hectare marine park — sponge gardens, weedy seadragons, giant cuttlefish and blue devil fish under limestone ledges. Best Dec to May.', driveMinutes: 10 },
+    { id: 'snork-addiscot', name: 'Addiscot Beach Rockpools', location: 'Point Addis', lat: -38.3690, lng: 144.2680, desc: 'Secluded beach with beautiful low-tide rock pools filled with coralline algae, urchins, crabs and marine invertebrates. Few visitors, within the marine national park.', driveMinutes: 12 },
+    { id: 'snork-roadknight', name: 'Point Roadknight', location: 'Anglesea', lat: -38.4105, lng: 144.2070, desc: 'Naturally sheltered bay with calm, shallow waters and rock pools teeming with life. The headland blocks westerly swells — ideal for families and beginner snorkellers.', driveMinutes: 15 },
+    { id: 'snork-eagle-rock', name: 'Eagle Rock Marine Sanctuary', location: 'Aireys Inlet', lat: -38.4671, lng: 144.1051, desc: 'Dramatic sanctuary beneath Split Point Lighthouse with volcanic rock stacks, limestone caves, rays, Port Jackson sharks and octopuses. Experienced swimmers only.', driveMinutes: 22 },
+    { id: 'snork-lorne-pier', name: 'Lorne Pier & Shelley Beach', location: 'Lorne', lat: -38.5420, lng: 143.9790, desc: 'Pier pylons attract pot-bellied seahorses, cowfish, thornfish and smooth rays. Nearby Shelley Beach has accessible rock pools in sheltered Loutit Bay.', driveMinutes: 35 },
+    { id: 'snork-urquhart', name: 'Soapy Rocks & Urquhart Bluff', location: 'Between Anglesea & Aireys', lat: -38.4350, lng: 144.1650, desc: 'Lesser-known spot with intriguing rock formations and intertidal platforms. Peaceful, uncrowded and photogenic with diverse algae and invertebrate communities.', driveMinutes: 18 },
+  ];
+
+  // ── Secret / Local Surf Spots ───────────────────────────────────
+  const SECRET_SPOTS = [
+    { id: 'sec-winkipop', name: 'Winkipop', location: 'East of Bells Beach', lat: -38.3686, lng: 144.2863, desc: 'World-class right-hand reef/point break producing 200m rides with fast, hollow walls over shallow reef. Often works under more diverse conditions than neighbouring Bells.', level: 'Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-bells-bowl', name: 'Bells Bowl', location: 'Main break at Bells Beach', lat: -38.3707, lng: 144.2827, desc: 'The crown jewel — a huge open-face right breaking over rock platform. On big days the Bowl connects through multiple sections all the way to the beach.', level: 'Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-rincon', name: 'Rincon', location: 'Outer Bells reef', lat: -38.3723, lng: 144.2823, desc: 'The outermost takeoff zone at Bells that catches raw SW groundswell first. On huge days a wave can be ridden from Rincon all the way through to Winkipop.', level: 'Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-centreside', name: 'Centreside', location: 'West of Bells Bowl', lat: -38.3741, lng: 144.2801, desc: 'A section of the Bells reef producing excellent right-handers that connect with the main wave on bigger swells. Usually less crowded than the Bowl.', level: 'Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-southside', name: 'Southside', location: 'Western side of Bells headland', lat: -38.3743, lng: 144.2789, desc: 'One of the few left-handers in the predominantly right-breaking Bells area. Picks up south-southeast swells and works best at high tide with NNW winds.', level: 'Advanced', waveType: 'Left-hand reef break' },
+    { id: 'sec-bird-rock', name: 'Bird Rock', location: 'Western end of Jan Juc', lat: -38.3573, lng: 144.3124, desc: 'Short, sucky right-hand reef break producing quick barrels on mid to high tide. Historically one of the most localised waves in Victoria.', level: 'Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-boobs', name: 'Boobs', location: 'Cliffs between Jan Juc & Winki', lat: -38.3692, lng: 144.2977, desc: 'Reef break offering lefts and rights, named after local landowner Bobby Johnson who caught the first wave here in the early 1960s. Best at high tide with SW swell.', level: 'Intermediate-Advanced', waveType: 'Left & right reef break' },
+    { id: 'sec-steps', name: 'Steps', location: 'Below Ocean Boulevard cliffs', lat: -38.3661, lng: 144.3009, desc: 'Right-hand reef break over limestone reef and gullies below 30-40m limestone bluffs. A popular access point for the string of cliff-base breaks.', level: 'Intermediate-Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-sparrows', name: 'Sparrows (Sparras)', location: 'Between Bird Rock & Steps', lat: -38.3562, lng: 144.2986, desc: 'Right-hand reef/point break working in NW offshores, surfable at all tides. One of several cliff-base breaks in the Jan Juc to Bells sequence.', level: 'Intermediate-Advanced', waveType: 'Right-hand point break' },
+    { id: 'sec-haystacks', name: 'Haystacks (Torquay Point)', location: 'Eastern end of Back Beach', lat: -38.3417, lng: 144.3311, desc: 'Reef and point break beside Rocky Point with lefts and rights over reef. Consistent year-round surf with the iconic limestone Haystacks jutting from the water.', level: 'Intermediate-Advanced', waveType: 'Left & right reef break' },
+    { id: 'sec-fishos', name: "Fisho's", location: 'Near Torquay boat ramp', lat: -38.3380, lng: 144.3380, desc: 'Point break over uneven reef and sand producing predominantly right-handers on mid to high tide. Can get crowded when on.', level: 'Intermediate', waveType: 'Right-hand point break' },
+    { id: 'sec-point-addis', name: 'Point Addis', location: 'Point Addis headland', lat: -38.4000, lng: 144.2627, desc: 'Slow-breaking right about 300m off the point producing long 100m+ rides. Less crowded than Bells, rewards with fun carving walls ideal for longboarding.', level: 'Intermediate-Advanced', waveType: 'Right-hand reef break' },
+    { id: 'sec-addiscot', name: 'Addiscot', location: 'Between Bells & Anglesea', lat: -38.3850, lng: 144.2700, desc: 'Secluded reef break accessed via the Surf Coast Walk through Ironbark Basin forest. Remote and uncrowded, picks up solid SW swell.', level: 'Advanced', waveType: 'Reef break' },
+    { id: 'sec-jarosites', name: 'Jarosites', location: 'Between Southside & Addiscot', lat: -38.3780, lng: 144.2760, desc: 'Lesser-known reef break tucked between Southside and Addiscot along the cliff-lined coast. Rarely crowded due to difficult access.', level: 'Advanced', waveType: 'Reef break' },
+    { id: 'sec-roadknight-reef', name: 'Point Roadknight', location: 'South end of Anglesea', lat: -38.4316, lng: 144.1828, desc: 'Sheltered point break producing smaller, manageable waves in the protected bay. Works with SSE swells and WSW winds. Popular with longboarders.', level: 'Intermediate', waveType: 'Right-hand point break' },
+    { id: 'sec-rivermouth', name: 'Anglesea Rivermouth', location: 'Southern Anglesea main beach', lat: -38.4200, lng: 144.1860, desc: 'Inconsistent reef break at the river mouth producing a nice left when conditions align. Requires solid SSE groundswell and NW offshores.', level: 'Intermediate-Advanced', waveType: 'Left-hand reef break' },
+    { id: 'sec-urquhart', name: 'Urquhart Bluff', location: 'Between Anglesea & Aireys Inlet', lat: -38.4360, lng: 144.1320, desc: 'Reef-influenced break below eroding limestone bluffs with steep medium-sized waves. The territory of experienced locals.', level: 'Intermediate-Advanced', waveType: 'Reef-influenced beach break' },
+    { id: 'sec-sunnymead', name: 'Sunnymead', location: 'Between Urquhart & Aireys Inlet', lat: -38.4450, lng: 144.1150, desc: 'Secluded stretch of sand flanked by rugged cliffs. Accessed through coastal bushland on the Surf Coast Walk — remote and uncrowded.', level: 'Intermediate', waveType: 'Beach break' },
+  ];
+
   // ── Logger-friendly ratings (1-5) ──────────────────────────────
   const LOGGER_FRIENDLY = {
     'torquay-front': 5,
@@ -1571,42 +1605,102 @@
     updateMapMarkers(state.currentScores);
   }
 
-  // ── Surf Movies section ──────────────────────────────────────────
-  function renderSurfMovies() {
-    // Don't duplicate
-    if (document.getElementById('surf-movies-section')) return;
+  // ── Extras section (tabbed: Movies / Snorkelling / Go Deeper) ───
+  let extrasTab = 'movies';
+
+  function renderExtras() {
+    if (document.getElementById('extras-section')) return;
     const learnSection = document.getElementById('learn-section');
     if (!learnSection) return;
 
-    const INITIAL_SHOW = 5;
     const section = document.createElement('section');
     section.className = 'section';
-    section.id = 'surf-movies-section';
-    section.innerHTML = `
-      <h2 class="section-title">
-        <span class="section-icon">🎬</span> Top 20 Surf Movies
-      </h2>
-      <p class="section-subtitle">For flat days, rainy arvo's, or when you just need a surf fix.</p>
-      <div class="movie-grid" id="movie-list">
-        ${SURF_MOVIES.map((m, i) => `
-          <div class="movie-card${i >= INITIAL_SHOW ? ' movie-hidden' : ''}">
-            <div class="movie-rank">#${i + 1}</div>
-            <div class="movie-info">
-              <strong>${m.title}</strong>
-              <span class="movie-year">${m.year}</span>
-              <p>${m.desc}</p>
-              <span class="movie-stream">📺 ${m.stream}</span>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      <button class="movie-toggle-btn" id="movie-toggle" onclick="toggleMovieList()">
-        Show all 20 movies ▼
-      </button>
-    `;
-
+    section.id = 'extras-section';
+    renderExtrasContent(section);
     learnSection.parentNode.insertBefore(section, learnSection);
   }
+
+  function renderExtrasContent(el) {
+    const section = el || document.getElementById('extras-section');
+    if (!section) return;
+
+    const tabs = [
+      { id: 'movies', icon: '🎬', label: 'Surf Movies' },
+      { id: 'snorkel', icon: '🤿', label: 'Snorkelling' },
+      { id: 'deeper', icon: '🗺️', label: 'Go Deeper' },
+    ];
+
+    let html = `
+      <h2 class="section-title">
+        <span class="section-icon">🏖️</span> Beyond the Surf
+      </h2>
+      <div class="extras-tabs">
+        ${tabs.map(t => `<button class="extras-tab${extrasTab === t.id ? ' active' : ''}" onclick="switchExtrasTab('${t.id}')"><span>${t.icon}</span> ${t.label}</button>`).join('')}
+      </div>
+      <div class="extras-body">
+    `;
+
+    if (extrasTab === 'movies') {
+      html += `<p class="section-subtitle">For flat days, rainy arvo's, or when you just need a surf fix.</p>`;
+      html += `<div class="movie-grid" id="movie-list">`;
+      html += SURF_MOVIES.map((m, i) => `
+        <div class="movie-card${i >= 5 ? ' movie-hidden' : ''}">
+          <div class="movie-rank">#${i + 1}</div>
+          <div class="movie-info">
+            <strong>${m.title}</strong>
+            <span class="movie-year">${m.year}</span>
+            <p>${m.desc}</p>
+            <span class="movie-stream">📺 ${m.stream}</span>
+          </div>
+        </div>
+      `).join('');
+      html += `</div>`;
+      html += `<button class="movie-toggle-btn" id="movie-toggle" onclick="toggleMovieList()">Show all 20 movies ▼</button>`;
+    } else if (extrasTab === 'snorkel') {
+      html += `<p class="section-subtitle">When the surf's flat or you just want to explore under the surface.</p>`;
+      html += `<div class="snorkel-grid">`;
+      html += SNORKEL_SPOTS.map(s => `
+        <div class="snorkel-card">
+          <div class="snorkel-header">
+            <span class="snorkel-icon">🤿</span>
+            <div>
+              <strong>${s.name}</strong>
+              <span class="snorkel-location">${s.location} · ${s.driveMinutes} min drive</span>
+            </div>
+          </div>
+          <p>${s.desc}</p>
+        </div>
+      `).join('');
+      html += `</div>`;
+    } else if (extrasTab === 'deeper') {
+      html += `<p class="section-subtitle">The local breaks, secret reefs and hidden gems that don't make the tourist maps.</p>`;
+      html += `<div class="secret-grid">`;
+      html += SECRET_SPOTS.map(s => {
+        const levelClass = s.level === 'Advanced' ? 'level-adv' : s.level === 'Intermediate' ? 'level-int' : 'level-intadv';
+        return `
+        <div class="secret-card">
+          <div class="secret-header">
+            <strong>${s.name}</strong>
+            <span class="secret-level ${levelClass}">${s.level}</span>
+          </div>
+          <span class="secret-location">${s.location}</span>
+          <span class="secret-wave">${s.waveType}</span>
+          <p>${s.desc}</p>
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+    section.innerHTML = html;
+  }
+
+  window.switchExtrasTab = function (tab) {
+    extrasTab = tab;
+    renderExtrasContent();
+    haptic(10);
+    playClick();
+  };
 
   window.toggleMovieList = function () {
     const list = document.getElementById('movie-list');
@@ -1637,7 +1731,7 @@
 
       // Render everything
       refreshUI();
-      renderSurfMovies();
+      renderExtras();
 
       // Update timestamp
       document.getElementById('last-updated').textContent =
