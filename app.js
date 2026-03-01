@@ -213,6 +213,16 @@
     { title: 'Bra Boys', year: 2007, desc: 'Gritty Aussie doco about the Maroubra surf crew', stream: 'Stan / Netflix / DocPlay' },
     { title: 'Storm Surfers 3D', year: 2012, desc: 'Aussie big wave legends tackle the heaviest waves down under', stream: 'Foxtel / Beamafilm' },
     { title: 'North Shore', year: 1987, desc: 'Classic 80s surf movie — cheesy, fun, and totally quotable', stream: 'Apple TV (rent)' },
+    { title: 'Gidget', year: 1959, desc: 'The one that kicked off surf culture — total classic vibes', stream: 'Apple TV (rent)' },
+    { title: 'Soul Surfer', year: 2011, desc: 'Bethany Hamilton loses her arm to a shark and paddles back out', stream: 'Apple TV / Fetch TV' },
+    { title: 'Chasing Mavericks', year: 2012, desc: 'Young Jay Moriarity chases the gnarliest cold-water wave', stream: 'Apple TV / Prime Video' },
+    { title: 'Puberty Blues', year: 1981, desc: 'Two Aussie girls fight their way into the Cronulla surf tribe', stream: 'SBS On Demand (free)' },
+    { title: 'Bustin\' Down the Door', year: 2008, desc: 'Aussie and SA surfers storm Hawaii in the 70s — game changers', stream: 'DocPlay / Foxtel' },
+    { title: 'Momentum Generation', year: 2018, desc: 'Kelly Slater\'s North Shore crew — rivalry and epic 90s barrels', stream: 'Apple TV / Amazon' },
+    { title: 'Facing Monsters', year: 2021, desc: 'West Aussie Kerby Brown chases terrifying slab waves solo', stream: 'DocPlay / Prime Video' },
+    { title: 'Breath', year: 2017, desc: 'Two groms in 70s WA get mentored by a wild, mysterious surfer', stream: 'SBS On Demand (free)' },
+    { title: 'Drift', year: 2013, desc: 'Aussie brothers build a surf brand from nothing in 1970s WA', stream: 'Tubi (free) / Prime Video' },
+    { title: 'View from a Blue Moon', year: 2015, desc: 'John John Florence in the first-ever 4K surf film — pure stoke', stream: 'Apple TV (rent)' },
   ];
 
   // ── Logger-friendly ratings (1-5) ──────────────────────────────
@@ -1568,17 +1578,18 @@
     const learnSection = document.getElementById('learn-section');
     if (!learnSection) return;
 
+    const INITIAL_SHOW = 5;
     const section = document.createElement('section');
     section.className = 'section';
     section.id = 'surf-movies-section';
     section.innerHTML = `
       <h2 class="section-title">
-        <span class="section-icon">🎬</span> Top 10 Surf Movies
+        <span class="section-icon">🎬</span> Top 20 Surf Movies
       </h2>
       <p class="section-subtitle">For flat days, rainy arvo's, or when you just need a surf fix.</p>
-      <div class="movie-grid">
+      <div class="movie-grid" id="movie-list">
         ${SURF_MOVIES.map((m, i) => `
-          <div class="movie-card">
+          <div class="movie-card${i >= INITIAL_SHOW ? ' movie-hidden' : ''}">
             <div class="movie-rank">#${i + 1}</div>
             <div class="movie-info">
               <strong>${m.title}</strong>
@@ -1589,10 +1600,23 @@
           </div>
         `).join('')}
       </div>
+      <button class="movie-toggle-btn" id="movie-toggle" onclick="toggleMovieList()">
+        Show all 20 movies ▼
+      </button>
     `;
 
     learnSection.parentNode.insertBefore(section, learnSection);
   }
+
+  window.toggleMovieList = function () {
+    const list = document.getElementById('movie-list');
+    const btn = document.getElementById('movie-toggle');
+    if (!list || !btn) return;
+    const isExpanded = list.classList.toggle('movie-list-expanded');
+    btn.textContent = isExpanded ? 'Show less ▲' : 'Show all 20 movies ▼';
+    haptic(10);
+    playClick();
+  };
 
   // ── Initialisation ─────────────────────────────────────────────
   async function init() {

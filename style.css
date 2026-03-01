@@ -1516,6 +1516,48 @@ body.surfer-mode .wave-size-tag.wave-size-warn {
 .movie-stream { display: inline-block; font-size: 0.72rem; color: var(--accent); margin-top: 4px; opacity: 0.85; }
 .movie-rec { border-left: 3px solid var(--accent) !important; }
 
+/* Movie list collapse/expand */
+.movie-hidden {
+  display: none !important;
+}
+.movie-list-expanded .movie-hidden {
+  display: flex !important;
+  animation: movieFadeIn 0.3s ease-out;
+}
+@keyframes movieFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.movie-toggle-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 20px;
+  background: var(--bg-card);
+  color: var(--accent);
+  border: 2px dashed rgba(0,180,216,0.25);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.movie-toggle-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+body.surfer-mode .movie-toggle-btn {
+  border-color: rgba(255,123,84,0.25);
+  color: var(--accent-warm);
+}
+body.surfer-mode .movie-toggle-btn:hover {
+  background: var(--accent-warm);
+  color: #fff;
+  border-color: var(--accent-warm);
+}
+
 /* ===== Flat Day Callout ===== */
 .flat-day-callout {
   background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(255,123,84,0.05));
