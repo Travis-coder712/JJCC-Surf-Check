@@ -1116,6 +1116,11 @@ body.surfer-mode.logger-mode .hero {
   align-items: center;
   gap: 14px;
   min-width: 0;
+  overflow: hidden;
+}
+.choice-card-left > div:last-child {
+  min-width: 0;
+  overflow: hidden;
 }
 .choice-emoji {
   font-size: 1.8rem;
@@ -1133,6 +1138,7 @@ body.surfer-mode.logger-mode .hero {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 .choice-score {
   width: 44px;
@@ -1476,8 +1482,8 @@ body.surfer-mode .wave-size-tag.wave-size-warn {
   font-size: 0.85rem;
   color: var(--text);
 }
-.eat-name { font-weight: 700; }
-.eat-desc { color: var(--text-secondary); font-size: 0.8rem; }
+.eat-name { font-weight: 700; display: block; }
+.eat-desc { color: var(--text-secondary); font-size: 0.8rem; display: block; }
 
 /* ===== Surf Movies ===== */
 .movie-grid {

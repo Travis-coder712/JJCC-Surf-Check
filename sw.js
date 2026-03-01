@@ -1,10 +1,11 @@
-const CACHE_NAME = 'surf-check-v2';
+const CACHE_NAME = 'surf-check-v3';
+// Use relative paths so caching works on both localhost and GitHub Pages subdirectory
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/manifest.json',
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './manifest.json',
 ];
 
 // Install — cache static assets
