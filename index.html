@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>JJCC Surf Check - Torquay Coast</title>
+  <meta name="description" content="Real-time surf conditions and recommendations for the Torquay Coast, Victoria">
+  <meta name="theme-color" content="#0b1d3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JJCC Surf Check">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/jpeg" href="icon-192.jpg">
+  <link rel="apple-touch-icon" href="icon-192.jpg">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-title-row">
+        <span class="hero-icon">🏄</span>
+        <div>
+          <h1>JJCC Surf Check</h1>
+          <p class="subtitle">Torquay Coast Guide</p>
+        </div>
+      </div>
+      <div class="mode-toggle" role="radiogroup" aria-label="Surf mode">
+        <button class="mode-btn active" data-mode="family" aria-pressed="true">
+          <span class="mode-icon">🏖️</span>
+          <span class="mode-label">Family</span>
+        </button>
+        <button class="mode-btn" data-mode="surfer" aria-pressed="false">
+          <span class="mode-icon">🏄</span>
+          <span class="mode-label">Surfer</span>
+        </button>
+        <button class="mode-btn" data-mode="logger" aria-pressed="false">
+          <span class="mode-icon">🤙</span>
+          <span class="mode-label">Logger</span>
+        </button>
+      </div>
+    </div>
+    <svg class="wave-divider" viewBox="0 0 1200 80" preserveAspectRatio="none">
+      <path d="M0,40 C150,80 350,0 500,40 C650,80 800,10 1000,40 C1100,55 1150,35 1200,40 L1200,80 L0,80 Z" fill="var(--bg)"/>
+    </svg>
+  </header>
+
+  <!-- Loading -->
+  <div id="loading" class="loading-screen">
+    <div class="loader">
+      <div class="wave-loader">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <p>Checking the surf...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="error-screen" class="error-screen" style="display:none">
+    <div class="error-content">
+      <span class="error-icon">⚠️</span>
+      <h2>Couldn't fetch surf data</h2>
+      <p id="error-message">Please check your internet connection and try again.</p>
+      <button class="btn-primary" onclick="location.reload()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="app-content" style="display:none">
+
+    <!-- Choices -->
+    <section class="section" id="choices-section">
+      <div class="section-title-row">
+        <h2 class="section-title">
+          <span class="section-icon">🌊</span> Where to surf?
+        </h2>
+        <button class="scoring-btn" onclick="openScoringModal()" aria-label="How ratings work">
+          <span>ℹ️</span> How ratings work
+        </button>
+      </div>
+      <div id="choice-cards" class="choice-grid"></div>
+      <div id="choice-results" style="display:none"></div>
+    </section>
+
+    <!-- Scoring Modal -->
+    <div id="scoring-modal" class="modal-overlay" onclick="if(event.target===this)closeScoringModal()">
+      <div class="modal-card" role="dialog" aria-label="Scoring system explained">
+        <div class="modal-header">
+          <h2>ℹ️ Surf Rating System</h2>
+          <button class="modal-close" onclick="closeScoringModal()" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <section class="section" id="map-section">
+      <h2 class="section-title">
+        <span class="section-icon">🗺️</span> Surf Map
+      </h2>
+      <p class="section-subtitle">Tap a marker to explore any beach.</p>
+      <div class="map-legend">
+        <span class="legend-item"><span class="legend-dot green"></span> Great</span>
+        <span class="legend-item"><span class="legend-dot yellow"></span> Fair</span>
+        <span class="legend-item"><span class="legend-dot red"></span> Poor</span>
+      </div>
+      <div id="map" class="map-container"></div>
+    </section>
+
+    <!-- Beach Detail Modal -->
+    <div id="beach-modal" class="modal-overlay" onclick="if(event.target===this)closeBeachModal()">
+      <div class="modal-card" role="dialog" aria-label="Beach conditions">
+        <div class="modal-header">
+          <h2 id="beach-modal-title"></h2>
+          <button class="modal-close" onclick="closeBeachModal()" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body" id="beach-modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Learn -->
+    <section class="section" id="learn-section">
+      <h2 class="section-title">
+        <span class="section-icon">📚</span> Understanding Surf Conditions
+      </h2>
+      <div class="learn-grid">
+        <div class="learn-card">
+          <h3>🌬️ Wind Direction</h3>
+          <p><strong>Offshore wind</strong> (blowing from land to sea) is ideal — it holds up the wave face and creates clean, groomed waves. <strong>Onshore wind</strong> (sea to land) makes waves choppy and messy. Each beach has a different "offshore" direction depending on which way it faces.</p>
+        </div>
+        <div class="learn-card">
+          <h3>🌊 Swell Height & Period</h3>
+          <p><strong>Swell height</strong> is how big the waves are in open water. <strong>Swell period</strong> is the time between waves — longer periods (10+ seconds) mean more powerful, well-organized waves from distant storms. Short periods (under 8 seconds) are locally generated wind swell, which tends to be messier.</p>
+        </div>
+        <div class="learn-card">
+          <h3>🧭 Swell Direction</h3>
+          <p>Waves travel across the ocean from where storms generate them. The direction the swell comes from determines which beaches it reaches. Southwest swells are most common on this coast. Some beaches are sheltered by headlands and only pick up certain swell directions.</p>
+        </div>
+        <div class="learn-card">
+          <h3>🏖️ Beach Type</h3>
+          <p><strong>Beach breaks</strong> (sandy bottom) shift and change — good for beginners. <strong>Reef breaks</strong> (rock bottom) are more consistent but can be sharper. Sheltered coves like Point Roadknight filter out big swell, making them safer for families.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Data from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>. Tide estimates are approximate.</p>
+      <p>Always check local conditions, swim between the flags, and respect the ocean.</p>
+      <p class="footer-updated" id="last-updated"></p>
+    </footer>
+
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>

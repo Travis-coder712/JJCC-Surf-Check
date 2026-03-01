@@ -1,0 +1,24 @@
+{
+  "name": "JJCC Surf Check — Torquay Coast",
+  "short_name": "JJCC Surf Check",
+  "description": "Real-time surf conditions and recommendations for the Torquay Coast, Victoria",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1d3a",
+  "theme_color": "#0b1d3a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
