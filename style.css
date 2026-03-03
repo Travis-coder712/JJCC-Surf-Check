@@ -1696,6 +1696,135 @@ body.surfer-mode .snorkel-card { border-left-color: var(--accent-warm); }
   margin: 0;
 }
 
+/* ===== Spot Groups (Snorkel + Go Deeper) ===== */
+.spot-group {
+  margin-bottom: 14px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+}
+.spot-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(11,29,58,0.04));
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.spot-group-header:hover {
+  background: linear-gradient(135deg, rgba(0,180,216,0.14), rgba(11,29,58,0.06));
+}
+.spot-group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.spot-group-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0,180,216,0.12);
+  color: var(--accent);
+}
+.spot-group-chevron {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: transform 0.3s;
+}
+.spot-group-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  padding: 0 16px;
+}
+.spot-group-body.open {
+  max-height: 5000px;
+  padding: 12px 16px 16px;
+}
+.spot-group-map {
+  height: 200px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.spot-group-body .snorkel-grid,
+.spot-group-body .secret-grid {
+  gap: 10px;
+}
+.spot-group-body .snorkel-card,
+.spot-group-body .secret-card {
+  box-shadow: none;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Tide badges */
+.tide-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  margin: 4px 0;
+}
+.tide-badge.tide-good {
+  background: var(--green-bg);
+  color: #16a34a;
+}
+.tide-badge.tide-wait {
+  background: var(--yellow-bg);
+  color: #a16207;
+}
+
+/* Getting there tip */
+.spot-getting-there {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(0,0,0,0.08);
+}
+.getting-there-icon {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.getting-there-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* Group map tooltip */
+.group-map-tooltip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* Surfer mode overrides for groups */
+body.surfer-mode .spot-group-header {
+  background: linear-gradient(135deg, rgba(255,123,84,0.08), rgba(255,159,67,0.04));
+}
+body.surfer-mode .spot-group-header:hover {
+  background: linear-gradient(135deg, rgba(255,123,84,0.14), rgba(255,159,67,0.06));
+}
+body.surfer-mode .spot-group-count {
+  background: rgba(255,123,84,0.12);
+  color: var(--accent-warm);
+}
+
 /* ===== Flat Day Callout ===== */
 .flat-day-callout {
   background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(255,123,84,0.05));
@@ -1781,6 +1910,16 @@ body.surfer-mode .flat-day-callout {
   .beach-detail-header:hover,
   .day-card-header:hover {
     background: rgba(255,255,255,0.03);
+  }
+  .spot-group-body .snorkel-card,
+  .spot-group-body .secret-card {
+    border-color: rgba(255,255,255,0.08);
+  }
+  .spot-group-map {
+    border-color: rgba(255,255,255,0.08);
+  }
+  .spot-getting-there {
+    border-top-color: rgba(255,255,255,0.08);
   }
 }
 
