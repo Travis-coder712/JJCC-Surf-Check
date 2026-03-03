@@ -1707,7 +1707,7 @@
             <span class="spot-group-chevron">▼</span>
           </button>
           <div class="spot-group-body open">
-            <div class="spot-group-map" id="${mapId}"></div>
+            <div class="spot-group-map" id="${mapId}"></div>${groupName === 'Bells & Winkipop' ? '<a class="spot-group-maplink" href="http://www.guyssurfarimaps.com/shop/bells-beach-torquay-to-point-addis" target="_blank" rel="noopener">🗺️ See detailed surf map by Guy\'s Surfari Maps</a>' : ''}
             <div class="${type === 'snorkel' ? 'snorkel-grid' : 'secret-grid'}">`;
 
       groupSpots.forEach(s => {

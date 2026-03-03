@@ -1756,6 +1756,17 @@ body.surfer-mode .snorkel-card { border-left-color: var(--accent-warm); }
   overflow: hidden;
   border: 1px solid rgba(0,0,0,0.06);
 }
+.spot-group-maplink {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 12px;
+  text-decoration: none;
+}
+.spot-group-maplink:hover {
+  text-decoration: underline;
+}
 .spot-group-body .snorkel-grid,
 .spot-group-body .secret-grid {
   gap: 10px;
