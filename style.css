@@ -1875,6 +1875,235 @@ body.surfer-mode .spot-group-count {
   color: var(--accent-warm);
 }
 
+/* ===== Beach Explainer Cards ===== */
+.beach-explainer-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.beach-explainer-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.beach-explainer-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+.beach-explainer-map-wrap {
+  position: relative;
+  height: 220px;
+  border-radius: var(--radius-sm);
+  overflow: visible;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.beach-explainer-map {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+/* Wind direction arrows */
+.arrow-offshore,
+.arrow-onshore {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 500;
+  pointer-events: none;
+}
+.arrow-offshore {
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(0, 70px);
+}
+.arrow-onshore {
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(0, 70px);
+}
+.arrow-line {
+  display: block;
+  position: absolute;
+  width: 4px;
+  height: 60px;
+  border-radius: 2px;
+  left: -2px;
+  bottom: 0;
+}
+.arrow-line::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+.arrow-offshore .arrow-line {
+  background: rgba(34, 197, 94, 0.85);
+  animation: arrowPulseGreen 2s ease-in-out infinite;
+}
+.arrow-offshore .arrow-line::after {
+  border-bottom: 10px solid rgba(34, 197, 94, 0.85);
+}
+.arrow-onshore .arrow-line {
+  background: rgba(239, 68, 68, 0.85);
+  animation: arrowPulseRed 2s ease-in-out infinite;
+}
+.arrow-onshore .arrow-line::after {
+  border-bottom: 10px solid rgba(239, 68, 68, 0.85);
+}
+/* Arrow labels — positioned independently using CSS trig */
+.beach-arrow-label {
+  position: absolute;
+  z-index: 600;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.label-offshore {
+  background: rgba(34, 197, 94, 0.9);
+  color: #fff;
+  /* Position at arrow base (over land): opposite to pointing direction */
+  top: calc(50% + cos(var(--angle)) * 75px);
+  left: calc(50% - sin(var(--angle)) * 75px);
+}
+.label-onshore {
+  background: rgba(239, 68, 68, 0.9);
+  color: #fff;
+  /* Position at arrow base (over sea): opposite to pointing direction */
+  top: calc(50% + cos(var(--angle)) * 75px);
+  left: calc(50% - sin(var(--angle)) * 75px);
+}
+@keyframes arrowPulseGreen {
+  0%, 100% { opacity: 0.7; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-8px); }
+}
+@keyframes arrowPulseRed {
+  0%, 100% { opacity: 0.7; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-8px); }
+}
+
+/* Beach explainer legend */
+.beach-explainer-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.legend-offshore { color: #16a34a; }
+.legend-onshore { color: #dc2626; }
+.beach-explainer-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+.beach-explainer-best {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.beach-explainer-best strong {
+  color: var(--text);
+}
+
+/* ===== Movie Categories ===== */
+.movie-category {
+  margin-bottom: 10px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+}
+.movie-category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(11,29,58,0.04));
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: var(--font);
+  color: var(--text);
+}
+.movie-category-header:hover {
+  background: linear-gradient(135deg, rgba(0,180,216,0.14), rgba(11,29,58,0.06));
+}
+.movie-category-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.movie-category-title > span:first-child {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.movie-category-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.movie-category-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0,180,216,0.12);
+  color: var(--accent);
+  margin-left: auto;
+  margin-right: 10px;
+}
+.movie-category-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  padding: 0 16px;
+}
+.movie-category-body.open {
+  max-height: 3000px;
+  padding: 10px 16px 16px;
+}
+.movie-category-body .movie-card {
+  box-shadow: none;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Surfer mode overrides for movie categories */
+body.surfer-mode .movie-category-header {
+  background: linear-gradient(135deg, rgba(255,123,84,0.08), rgba(255,159,67,0.04));
+}
+body.surfer-mode .movie-category-header:hover {
+  background: linear-gradient(135deg, rgba(255,123,84,0.14), rgba(255,159,67,0.06));
+}
+body.surfer-mode .movie-category-count {
+  background: rgba(255,123,84,0.12);
+  color: var(--accent-warm);
+}
+
+/* Dark mode overrides for beach explainer + movie categories */
+@media (prefers-color-scheme: dark) {
+  .beach-explainer-map-wrap {
+    border-color: rgba(255,255,255,0.08);
+  }
+  .movie-category-body .movie-card {
+    border-color: rgba(255,255,255,0.08);
+  }
+}
+
 /* ===== Flat Day Callout ===== */
 .flat-day-callout {
   background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(255,123,84,0.05));

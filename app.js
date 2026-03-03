@@ -225,6 +225,14 @@
     { title: 'View from a Blue Moon', year: 2015, desc: 'John John Florence in the first-ever 4K surf film — pure stoke', stream: 'Apple TV (rent)' },
   ];
 
+  const MOVIE_CATEGORIES = [
+    { name: 'The OGs', icon: '🎞️', desc: 'Where it all began', movies: [0, 2, 10, 4] },
+    { name: 'Hollywood Gets Wet', icon: '🎬', desc: 'When Tinseltown tried surfing', movies: [1, 5, 9, 11] },
+    { name: 'True Blue Aussie', icon: '🇦🇺', desc: 'Our backyard legends', movies: [7, 13, 17, 18] },
+    { name: 'Send It', icon: '🌊', desc: 'Big wave madness', movies: [3, 8, 12, 16] },
+    { name: 'Pure Stoke', icon: '🤙', desc: 'Just good vibes', movies: [6, 14, 15, 19] },
+  ];
+
   // ── Snorkelling Spots ────────────────────────────────────────
   const SNORKEL_SPOT_GROUPS = ['Torquay & Jan Juc', 'Bells to Anglesea', 'Anglesea & South', 'Aireys Inlet & Lorne'];
   const SNORKEL_SPOTS = [
@@ -1658,9 +1666,9 @@
               <span>${groupName}</span>
               <span class="spot-group-count">${groupSpots.length} spot${groupSpots.length > 1 ? 's' : ''}</span>
             </div>
-            <span class="spot-group-chevron">▼</span>
+            <span class="spot-group-chevron">▶</span>
           </button>
-          <div class="spot-group-body open">
+          <div class="spot-group-body">
             <div class="spot-group-map" id="${mapId}"></div>${groupName === 'Bells & Winkipop' ? '<a class="spot-group-maplink" href="http://www.guyssurfarimaps.com/shop/bells-beach-torquay-to-point-addis" target="_blank" rel="noopener">🗺️ See detailed surf map by Guy\'s Surfari Maps</a>' : ''}
             <div class="${type === 'snorkel' ? 'snorkel-grid' : 'secret-grid'}">`;
 
@@ -1722,6 +1730,94 @@
     learnSection.parentNode.insertBefore(section, learnSection);
   }
 
+  function initExplainerMap(containerId, beach) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const map = L.map(el, {
+      zoomControl: false,
+      attributionControl: false,
+      dragging: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+    }).setView([beach.lat, beach.lng], 15);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+    }).addTo(map);
+    L.circleMarker([beach.lat, beach.lng], {
+      radius: 6, fillColor: '#fff', color: '#fff', weight: 2, fillOpacity: 0.9,
+    }).addTo(map);
+    extrasMaps.push(map);
+  }
+
+  function renderBeachExplainers() {
+    let html = '';
+    BEACHES.forEach((b, i) => {
+      const offshoreGoesTo = (b.idealOffshore + 180) % 360;
+      const onshoreGoesTo = (b.facing + 180) % 360;
+      const offshoreFrom = degToCompass(b.idealOffshore);
+      const onshoreFrom = degToCompass(b.facing);
+      const mapId = `explainer-map-${i}`;
+      html += `
+        <div class="beach-explainer-card">
+          <h4>${b.name}</h4>
+          <p class="beach-explainer-sub">${b.location} · ${b.type}, ${b.bottom} bottom</p>
+          <div class="beach-explainer-map-wrap">
+            <div class="beach-explainer-map" id="${mapId}"></div>
+            <div class="arrow-offshore" style="--angle: ${offshoreGoesTo}deg">
+              <span class="arrow-line"></span>
+            </div>
+            <div class="arrow-onshore" style="--angle: ${onshoreGoesTo}deg">
+              <span class="arrow-line"></span>
+            </div>
+            <span class="beach-arrow-label label-offshore" style="--angle: ${offshoreGoesTo}deg">Offshore</span>
+            <span class="beach-arrow-label label-onshore" style="--angle: ${onshoreGoesTo}deg">Onshore</span>
+          </div>
+          <div class="beach-explainer-legend">
+            <span class="legend-offshore">🟢 Offshore (good) — wind from ${offshoreFrom}</span>
+            <span class="legend-onshore">🔴 Onshore (poor) — wind from ${onshoreFrom}</span>
+          </div>
+          <p class="beach-explainer-desc">${b.description}</p>
+          <p class="beach-explainer-best"><strong>Best for:</strong> ${b.bestFor}</p>
+        </div>`;
+    });
+    return html;
+  }
+
+  function renderMovieCategories() {
+    let html = '';
+    MOVIE_CATEGORIES.forEach((cat, ci) => {
+      const isOpen = ci === 0;
+      html += `
+        <div class="movie-category">
+          <button class="movie-category-header" onclick="toggleMovieCategory(this)">
+            <div class="movie-category-title">
+              <span>${cat.icon} ${cat.name}</span>
+              <span class="movie-category-desc">${cat.desc}</span>
+            </div>
+            <span class="movie-category-count">${cat.movies.length}</span>
+            <span class="spot-group-chevron">${isOpen ? '▼' : '▶'}</span>
+          </button>
+          <div class="movie-category-body${isOpen ? ' open' : ''}">
+            <div class="movie-grid">
+              ${cat.movies.map(idx => {
+                const m = SURF_MOVIES[idx];
+                return `<div class="movie-card">
+                  <div class="movie-info">
+                    <strong>${m.title}</strong>
+                    <span class="movie-year">${m.year}</span>
+                    <p>${m.desc}</p>
+                    <span class="movie-stream">📺 ${m.stream}</span>
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+        </div>`;
+    });
+    return html;
+  }
+
   function renderExtrasContent(el) {
     cleanupExtrasMaps();
     const section = el || document.getElementById('extras-section');
@@ -1731,6 +1827,7 @@
       { id: 'movies', icon: '🎬', label: 'Surf Movies' },
       { id: 'snorkel', icon: '🤿', label: 'Snorkelling' },
       { id: 'deeper', icon: '🗺️', label: 'Go Deeper' },
+      { id: 'beaches', icon: '🏖️', label: 'Beach Guide' },
     ];
 
     let html = `
@@ -1745,26 +1842,16 @@
 
     if (extrasTab === 'movies') {
       html += `<p class="section-subtitle">For flat days, rainy arvo's, or when you just need a surf fix.</p>`;
-      html += `<div class="movie-grid" id="movie-list">`;
-      html += SURF_MOVIES.map((m, i) => `
-        <div class="movie-card${i >= 5 ? ' movie-hidden' : ''}">
-          <div class="movie-rank">#${i + 1}</div>
-          <div class="movie-info">
-            <strong>${m.title}</strong>
-            <span class="movie-year">${m.year}</span>
-            <p>${m.desc}</p>
-            <span class="movie-stream">📺 ${m.stream}</span>
-          </div>
-        </div>
-      `).join('');
-      html += `</div>`;
-      html += `<button class="movie-toggle-btn" id="movie-toggle" onclick="toggleMovieList()">Show all 20 movies ▼</button>`;
+      html += renderMovieCategories();
     } else if (extrasTab === 'snorkel') {
       html += `<p class="section-subtitle">When the surf's flat or you just want to explore under the surface.</p>`;
       html += renderGroupedSpots(SNORKEL_SPOT_GROUPS, SNORKEL_SPOTS, 'snorkel');
     } else if (extrasTab === 'deeper') {
       html += `<p class="section-subtitle">The local breaks, secret reefs and hidden gems that don't make the tourist maps.</p>`;
       html += renderGroupedSpots(SECRET_SPOT_GROUPS, SECRET_SPOTS, 'deeper');
+    } else if (extrasTab === 'beaches') {
+      html += `<p class="section-subtitle">How each beach works — wind directions, wave types, and what to expect.</p>`;
+      html += renderBeachExplainers();
     }
 
     html += `</div>`;
@@ -1781,6 +1868,12 @@
           if (groupSpots.length > 0) {
             initGroupMap(`${prefix}-map-${gi}`, groupSpots);
           }
+        });
+      });
+    } else if (extrasTab === 'beaches') {
+      requestAnimationFrame(() => {
+        BEACHES.forEach((b, i) => {
+          initExplainerMap(`explainer-map-${i}`, b);
         });
       });
     }
@@ -1815,6 +1908,15 @@
     if (!list || !btn) return;
     const isExpanded = list.classList.toggle('movie-list-expanded');
     btn.textContent = isExpanded ? 'Show less ▲' : 'Show all 20 movies ▼';
+    haptic(10);
+    playClick();
+  };
+
+  window.toggleMovieCategory = function (headerEl) {
+    const body = headerEl.nextElementSibling;
+    const chevron = headerEl.querySelector('.spot-group-chevron');
+    const isOpen = body.classList.toggle('open');
+    chevron.textContent = isOpen ? '▼' : '▶';
     haptic(10);
     playClick();
   };
