@@ -1897,96 +1897,97 @@ body.surfer-mode .spot-group-count {
   position: relative;
   height: 220px;
   border-radius: var(--radius-sm);
-  overflow: visible;
+  overflow: hidden;
   margin-bottom: 10px;
   border: 1px solid rgba(0,0,0,0.06);
 }
 .beach-explainer-map {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
 }
 
-/* Wind direction arrows — centered on map, spanning land to water */
+/* Wind direction arrows — corner legend box */
+.arrow-corner-legend {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 500;
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  padding: 8px 8px 5px;
+  pointer-events: none;
+}
+.arrow-corner-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 48px;
+}
 .arrow-offshore,
 .arrow-onshore {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  z-index: 500;
-  pointer-events: none;
-  transform: translate(-50%, -50%) rotate(var(--angle));
+  position: relative;
+  width: 48px;
+  height: 48px;
 }
 .arrow-line {
   display: block;
   position: absolute;
-  width: 6px;
-  height: 140px;
-  border-radius: 3px;
-  left: -3px;
-  bottom: -70px;
-  filter: drop-shadow(0 0 4px rgba(0,0,0,0.5));
+  width: 5px;
+  height: 32px;
+  border-radius: 2px;
+  left: 50%;
+  top: 50%;
+  margin-left: -2.5px;
+  margin-top: -32px;
+  transform-origin: center bottom;
+  transform: rotate(var(--angle));
 }
 .arrow-line::after {
   content: '';
   position: absolute;
-  top: -8px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
 }
 .arrow-offshore .arrow-line {
   background: #22c55e;
-  animation: arrowPulseGreen 2s ease-in-out infinite;
+  animation: arrowPulse 2s ease-in-out infinite;
 }
 .arrow-offshore .arrow-line::after {
-  border-bottom: 14px solid #22c55e;
+  border-bottom: 10px solid #22c55e;
 }
 .arrow-onshore .arrow-line {
   background: #ef4444;
-  animation: arrowPulseRed 2s ease-in-out infinite;
+  animation: arrowPulse 2s ease-in-out infinite 0.5s;
 }
 .arrow-onshore .arrow-line::after {
-  border-bottom: 14px solid #ef4444;
+  border-bottom: 10px solid #ef4444;
 }
-/* Arrow labels — at arrow tips using CSS trig */
-.beach-arrow-label {
-  position: absolute;
-  z-index: 600;
-  font-size: 0.7rem;
+.arrow-corner-label {
+  font-size: 0.58rem;
   font-weight: 700;
   white-space: nowrap;
-  padding: 3px 8px;
-  border-radius: 5px;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+  padding: 1px 5px;
+  border-radius: 3px;
 }
-.label-offshore {
+.arrow-corner-label.label-offshore {
   background: #22c55e;
   color: #fff;
-  /* Base/source: over land where offshore wind originates */
-  top: calc(50% + cos(var(--angle)) * 85px);
-  left: calc(50% - sin(var(--angle)) * 85px);
 }
-.label-onshore {
+.arrow-corner-label.label-onshore {
   background: #ef4444;
   color: #fff;
-  /* Base/source: over sea where onshore wind originates */
-  top: calc(50% + cos(var(--angle)) * 85px);
-  left: calc(50% - sin(var(--angle)) * 85px);
 }
-@keyframes arrowPulseGreen {
-  0%, 100% { opacity: 0.75; transform: translateY(4px); }
-  50% { opacity: 1; transform: translateY(-4px); }
-}
-@keyframes arrowPulseRed {
-  0%, 100% { opacity: 0.75; transform: translateY(4px); }
-  50% { opacity: 1; transform: translateY(-4px); }
+@keyframes arrowPulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
 }
 
 /* Beach explainer legend */

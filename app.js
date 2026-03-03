@@ -1764,14 +1764,20 @@
           <p class="beach-explainer-sub">${b.location} · ${b.type}, ${b.bottom} bottom</p>
           <div class="beach-explainer-map-wrap">
             <div class="beach-explainer-map" id="${mapId}"></div>
-            <div class="arrow-offshore" style="--angle: ${offshoreGoesTo}deg">
-              <span class="arrow-line"></span>
+            <div class="arrow-corner-legend">
+              <div class="arrow-corner-item">
+                <div class="arrow-offshore" style="--angle: ${offshoreGoesTo}deg">
+                  <span class="arrow-line"></span>
+                </div>
+                <span class="arrow-corner-label label-offshore">Offshore</span>
+              </div>
+              <div class="arrow-corner-item">
+                <div class="arrow-onshore" style="--angle: ${onshoreGoesTo}deg">
+                  <span class="arrow-line"></span>
+                </div>
+                <span class="arrow-corner-label label-onshore">Onshore</span>
+              </div>
             </div>
-            <div class="arrow-onshore" style="--angle: ${onshoreGoesTo}deg">
-              <span class="arrow-line"></span>
-            </div>
-            <span class="beach-arrow-label label-offshore" style="--angle: ${offshoreGoesTo}deg">Offshore</span>
-            <span class="beach-arrow-label label-onshore" style="--angle: ${onshoreGoesTo}deg">Onshore</span>
           </div>
           <div class="beach-explainer-legend">
             <span class="legend-offshore">🟢 Offshore (good) — wind from ${offshoreFrom}</span>
