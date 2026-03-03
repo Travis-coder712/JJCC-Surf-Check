@@ -17,7 +17,7 @@
       name: 'Torquay Front Beach',
       location: 'Torquay',
       lat: -38.3310, lng: 144.3260,
-      facing: 135, idealOffshore: 315,
+      facing: 90, idealOffshore: 295,
       swellWindow: [90, 200],
       swellExposure: 0.35,
       familySafety: 5,
@@ -31,7 +31,8 @@
       name: 'Torquay Surf Beach',
       location: 'Torquay',
       lat: -38.3400, lng: 144.3150,
-      facing: 190, idealOffshore: 10,
+      mapLat: -38.3445, mapLng: 144.3080,
+      facing: 155, idealOffshore: 335,
       swellWindow: [160, 250],
       swellExposure: 0.85,
       familySafety: 3,
@@ -59,7 +60,7 @@
       name: 'Bells Beach',
       location: 'Bells Beach',
       lat: -38.3690, lng: 144.2810,
-      facing: 225, idealOffshore: 45,
+      facing: 168, idealOffshore: 330,
       swellWindow: [190, 280],
       swellExposure: 1.0,
       familySafety: 1,
@@ -73,7 +74,8 @@
       name: 'Point Addis',
       location: 'Anglesea',
       lat: -38.3960, lng: 144.2600,
-      facing: 220, idealOffshore: 40,
+      mapLat: -38.3880, mapLng: 144.2570,
+      facing: 155, idealOffshore: 330,
       swellWindow: [180, 270],
       swellExposure: 0.95,
       familySafety: 1,
@@ -87,7 +89,7 @@
       name: 'Anglesea Main Beach',
       location: 'Anglesea',
       lat: -38.4080, lng: 144.1920,
-      facing: 185, idealOffshore: 5,
+      facing: 155, idealOffshore: 315,
       swellWindow: [150, 250],
       swellExposure: 0.7,
       familySafety: 4,
@@ -101,7 +103,8 @@
       name: 'Point Roadknight',
       location: 'Anglesea',
       lat: -38.4010, lng: 144.1960,
-      facing: 100, idealOffshore: 280,
+      mapLat: -38.3990, mapLng: 144.2060, mapZoom: 14,
+      facing: 45, idealOffshore: 240,
       swellWindow: [50, 180],
       swellExposure: 0.25,
       familySafety: 5,
@@ -115,7 +118,8 @@
       name: 'Fairhaven Beach',
       location: 'Fairhaven',
       lat: -38.4750, lng: 144.0920,
-      facing: 195, idealOffshore: 15,
+      mapLat: -38.4700, mapLng: 144.0920,
+      facing: 180, idealOffshore: 0,
       swellWindow: [160, 260],
       swellExposure: 0.85,
       familySafety: 3,
@@ -129,7 +133,7 @@
       name: 'Lorne',
       location: 'Lorne',
       lat: -38.5420, lng: 143.9750,
-      facing: 155, idealOffshore: 335,
+      facing: 115, idealOffshore: 295,
       swellWindow: [120, 220],
       swellExposure: 0.45,
       familySafety: 4,
@@ -143,7 +147,8 @@
       name: '13th Beach',
       location: 'Barwon Heads',
       lat: -38.2980, lng: 144.5050,
-      facing: 175, idealOffshore: 355,
+      mapLat: -38.2840, mapLng: 144.4980,
+      facing: 180, idealOffshore: 20,
       swellWindow: [140, 240],
       swellExposure: 0.80,
       familySafety: 3,
@@ -153,6 +158,142 @@
       driveMinutes: 25,
     },
   ];
+
+  // ── Beach intel ─────────────────────────────────────────────
+  // Detailed surf knowledge for each spot, sourced from web references
+  const BEACH_INTEL = {
+    'torquay-front': {
+      facing_desc: 'East (E)',
+      offshore_desc: 'WNW (west-north-west)',
+      swell: 'Picks up small easterly wind swells and refracted southerly swell. Needs bigger conditions to get going.',
+      tide: 'Works on all tides. Best at mid-tide for beginners.',
+      hazards: 'Generally safe. Occasional rip near the rocks on the south end.',
+      season: 'Year-round for learners. Summer for families (patrolled).',
+      local_tip: 'When it\'s too big everywhere else, Front Beach usually has something manageable. Great for after-school sessions.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Torquay-Front-Beach' },
+        { name: 'BeachSafe', url: 'https://beachsafe.org.au/beach/vic/surf-coast/torquay/front-beach' },
+      ],
+    },
+    'torquay-surf': {
+      facing_desc: 'SSE (south-south-east)',
+      offshore_desc: 'NNW (north-north-west)',
+      swell: 'Exposed to south and south-west swells. Consistent and picks up most available swell energy along this stretch.',
+      tide: 'Best at low to mid tide. Can close out on high tide with bigger swells.',
+      hazards: 'Strong rips on bigger days, especially near the rocks. Watch the channel rip on the eastern end.',
+      season: 'Year-round. Autumn/winter brings the best and most consistent swell.',
+      local_tip: 'Also called "Back Beach". Walk east along the beach to find less crowded peaks. The car park break can get very busy.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Torquay' },
+        { name: 'Swellnet', url: 'https://www.swellnet.com/surfing/australia/victoria/torquay' },
+      ],
+    },
+    'jan-juc': {
+      facing_desc: 'SSW (south-south-west)',
+      offshore_desc: 'NNE (north-north-east)',
+      swell: 'Handles south-west through to southerly swells well. The reef section (the Bowl) needs a solid 3ft+ to start working.',
+      tide: 'Best on incoming mid tide. The Bowl works best at low to mid tide. Can get fat and sluggish at high tide.',
+      hazards: 'Sharp reef and rocks throughout. Sea urchins. Rips form along the reef edges. Localised — be respectful.',
+      season: 'Autumn and winter for more consistent swell. Spring can be good with lighter winds.',
+      local_tip: 'The Bowl section is a heavy, hollow wave — know your limits. Booties recommended for the reef walk. Locals are protective of this spot.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Jan-Juc' },
+        { name: 'WannaSurf', url: 'https://www.wannasurf.com/spot/Australia_Pacific/Australia/Victoria/Torquay/jan_juc/' },
+      ],
+    },
+    'bells': {
+      facing_desc: 'SSE (south-south-east, ~168°)',
+      offshore_desc: 'NNW–NW (north-north-west, ~330°)',
+      swell: 'Needs solid south-west to south swell, ideally 4–8ft. Long-period groundswells from the Southern Ocean produce the classic Bells walls.',
+      tide: 'Best from mid to high tide. At low tide the reef is too shallow and the wave sections. High tide fills in the bowl nicely.',
+      hazards: 'Powerful reef break with heavy wipeouts. Steep cliff access. Strong currents and rips. Not suitable for inexperienced surfers.',
+      season: 'March through September (autumn–winter) for the best and biggest swells. The Rip Curl Pro is held at Easter.',
+      local_tip: 'NW is the magic wind here — NNW also works. True northerly winds can create a "devil wind" effect where turbulence off the cliffs makes conditions bumpy despite being technically offshore. Rincon section inside Bells is more sheltered.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Bells-Beach' },
+        { name: 'Surfline', url: 'https://www.surfline.com/surf-report/bells-beach/584204204e65fad6a77097c5' },
+        { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Bells_Beach,_Victoria' },
+      ],
+    },
+    'point-addis': {
+      facing_desc: 'SSE (south-south-east)',
+      offshore_desc: 'NNW–NW (~330°)',
+      swell: 'Needs a solid south-west to south swell. Being a point/reef break, it handles bigger swells well and the wave wraps around the headland.',
+      tide: 'Works on most tides but best at mid to high tide. Low tide can be shallow and risky over the reef.',
+      hazards: 'Remote location — long walk down steep cliffs. No mobile reception in spots. Rocks and reef. Strong currents. Sharks have been sighted.',
+      season: 'Autumn and winter for consistent swell. Can fire in spring with the right conditions.',
+      local_tip: 'Part of the Point Addis Marine National Park. The walk in is 15–20 minutes. Check conditions before committing. A great alternative when Bells is too crowded.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Addis' },
+        { name: 'BeachSafe', url: 'https://beachsafe.org.au/beach/vic/surf-coast/anglesea/point-addis' },
+      ],
+    },
+    'anglesea': {
+      facing_desc: 'SSE (south-south-east)',
+      offshore_desc: 'NW (north-west)',
+      swell: 'Picks up south and south-west swell but the headlands provide some protection, keeping waves smaller than more exposed beaches.',
+      tide: 'Best at low to mid tide. The river mouth creates sandbars that shift seasonally.',
+      hazards: 'Rips near the river mouth. Occasional bluebottles in summer. Generally one of the safer surf beaches in the area.',
+      season: 'Year-round. A great spot when bigger swells make other beaches too powerful.',
+      local_tip: 'The Anglesea River mouth creates interesting sandbanks that can produce fun waves. Watch for the changing banks after rain.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Anglesea' },
+        { name: 'BeachSafe', url: 'https://beachsafe.org.au/beach/vic/surf-coast/anglesea/main-beach' },
+      ],
+    },
+    'roadknight': {
+      facing_desc: 'NE (north-east, ~45°)',
+      offshore_desc: 'WSW (west-south-west, ~240°)',
+      swell: 'Heavily sheltered from prevailing south-west swell. Needs a strong easterly or north-east swell, or a huge south swell to wrap in.',
+      tide: 'Works on all tides. Higher tides bring calmer conditions for swimming.',
+      hazards: 'Very safe for families. Rocky platforms at the edges. Gentle shore break.',
+      season: 'Summer is best for families (patrolled). Rarely produces surfable waves — it\'s a swimming and paddling spot.',
+      local_tip: 'The perfect hideaway when everywhere else is blown out or too big. Calm, warm, and great for kids. Rock pools on the western headland are fun to explore at low tide.',
+      sources: [
+        { name: 'BeachSafe', url: 'https://beachsafe.org.au/beach/vic/surf-coast/anglesea/point-roadknight' },
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Point-Roadknight' },
+      ],
+    },
+    'fairhaven': {
+      facing_desc: 'South (S)',
+      offshore_desc: 'North (N)',
+      swell: 'Very consistent — picks up all south and south-west swells. Multiple peaks along the long beach mean you can usually find a wave.',
+      tide: 'Works on all tides. Low tide can produce hollow, punchy beach break waves.',
+      hazards: 'Strong rips, especially on bigger days. The beach is long and can be isolated. Bluebottles in summer easterly winds.',
+      season: 'Year-round. Less crowded than Torquay area even in summer.',
+      local_tip: 'Walk south along the beach from the car park to find your own peak. The surf is often similar quality to Torquay but with a fraction of the crowd.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Fairhaven' },
+        { name: 'Surfline', url: 'https://www.surfline.com/surf-report/fairhaven/584204204e65fad6a77097dd' },
+      ],
+    },
+    'lorne': {
+      facing_desc: 'ESE (east-south-east, ~115°)',
+      offshore_desc: 'WNW (west-north-west, ~295°)',
+      swell: 'Sheltered by the Otway headlands. Needs a large south or south-east swell to wrap into the bay. Smaller and mellower than beaches further east.',
+      tide: 'Best at low to mid tide for surfing. The point on the southern end can produce fun right-handers.',
+      hazards: 'Generally safe. Rips near the pier and point. Can get some current from the Erskine River.',
+      season: 'Winter and autumn for the biggest swells to wrap in. A great summer destination for families.',
+      local_tip: 'When everywhere east is maxing out, Lorne is often 2–3ft smaller and clean. The point at the south end of the beach can have fun rights on a solid south swell.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Lorne' },
+        { name: 'BeachSafe', url: 'https://beachsafe.org.au/beach/vic/surf-coast/lorne/main-beach' },
+      ],
+    },
+    'thirteenth': {
+      facing_desc: 'South (S)',
+      offshore_desc: 'NNE (north-north-east, ~20°)',
+      swell: 'Well exposed to south and south-west swells. The Beacon break at the eastern end is the most popular section.',
+      tide: 'Best at low to mid tide. Sandbars shift regularly creating different peaks.',
+      hazards: 'Strong rips, especially near the rocks at Beacon. Long walk from the car park. Isolated — limited mobile reception in places.',
+      season: 'Year-round. Great in north-east winds when Bells and Jan Juc are blown out — this is the go-to alternative.',
+      local_tip: 'When the wind swings NE and ruins Bells, head to 13th Beach — it\'ll be offshore and often uncrowded. The walk from the car park is 10–15 minutes. Multiple peaks along the 6km stretch.',
+      sources: [
+        { name: 'Surf-Forecast.com', url: 'https://www.surf-forecast.com/breaks/Thirteenth-Beach' },
+        { name: 'Swellnet', url: 'https://www.swellnet.com/surfing/australia/victoria/barwon-heads' },
+      ],
+    },
+  };
 
   // API groups — beaches share wave data from the nearest point
   const API_GROUPS = [
@@ -1733,6 +1874,9 @@
   function initExplainerMap(containerId, beach) {
     const el = document.getElementById(containerId);
     if (!el) return;
+    const lat = beach.mapLat || beach.lat;
+    const lng = beach.mapLng || beach.lng;
+    const zoom = beach.mapZoom || 15;
     const map = L.map(el, {
       zoomControl: false,
       attributionControl: false,
@@ -1740,11 +1884,11 @@
       scrollWheelZoom: false,
       doubleClickZoom: false,
       touchZoom: false,
-    }).setView([beach.lat, beach.lng], 15);
+    }).setView([lat, lng], zoom);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 18,
     }).addTo(map);
-    L.circleMarker([beach.lat, beach.lng], {
+    L.circleMarker([lat, lng], {
       radius: 6, fillColor: '#fff', color: '#fff', weight: 2, fillOpacity: 0.9,
     }).addTo(map);
     extrasMaps.push(map);
@@ -1758,9 +1902,10 @@
       const offshoreFrom = degToCompass(b.idealOffshore);
       const onshoreFrom = degToCompass(b.facing);
       const mapId = `explainer-map-${i}`;
+      const intel = BEACH_INTEL[b.id];
       html += `
         <div class="beach-explainer-card">
-          <h4>${b.name}</h4>
+          <h4>🏖️ ${b.name}</h4>
           <p class="beach-explainer-sub">${b.location} · ${b.type}, ${b.bottom} bottom</p>
           <div class="beach-explainer-map-wrap">
             <div class="beach-explainer-map" id="${mapId}"></div>
@@ -1780,11 +1925,50 @@
             </div>
           </div>
           <div class="beach-explainer-legend">
-            <span class="legend-offshore">🟢 Offshore (good) — wind from ${offshoreFrom}</span>
+            <span class="legend-offshore">🟢 Offshore (good) — wind from ${offshoreFrom} ${intel ? '(' + intel.offshore_desc + ')' : ''}</span>
             <span class="legend-onshore">🔴 Onshore (poor) — wind from ${onshoreFrom}</span>
           </div>
           <p class="beach-explainer-desc">${b.description}</p>
           <p class="beach-explainer-best"><strong>Best for:</strong> ${b.bestFor}</p>
+          ${intel ? `
+          <div class="beach-intel-section">
+            <button class="beach-intel-toggle" onclick="toggleBeachIntel(this)">
+              <span>🧠 Spot Intel</span>
+              <span class="spot-group-chevron">▶</span>
+            </button>
+            <div class="beach-intel-body">
+              <div class="beach-intel-grid">
+                <div class="beach-intel-item">
+                  <span class="intel-icon">🧭</span>
+                  <div><strong>Beach Faces</strong><br>${intel.facing_desc}</div>
+                </div>
+                <div class="beach-intel-item">
+                  <span class="intel-icon">🌊</span>
+                  <div><strong>Swell</strong><br>${intel.swell}</div>
+                </div>
+                <div class="beach-intel-item">
+                  <span class="intel-icon">🌙</span>
+                  <div><strong>Tide</strong><br>${intel.tide}</div>
+                </div>
+                <div class="beach-intel-item">
+                  <span class="intel-icon">⚠️</span>
+                  <div><strong>Hazards</strong><br>${intel.hazards}</div>
+                </div>
+                <div class="beach-intel-item">
+                  <span class="intel-icon">📅</span>
+                  <div><strong>Best Season</strong><br>${intel.season}</div>
+                </div>
+                <div class="beach-intel-item">
+                  <span class="intel-icon">💡</span>
+                  <div><strong>Local Tip</strong><br>${intel.local_tip}</div>
+                </div>
+              </div>
+              <div class="beach-intel-sources">
+                <span class="intel-sources-label">📚 Sources:</span>
+                ${intel.sources.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="intel-source-link">${s.name}</a>`).join('')}
+              </div>
+            </div>
+          </div>` : ''}
         </div>`;
     });
     return html;
@@ -1921,6 +2105,15 @@
   window.toggleMovieCategory = function (headerEl) {
     const body = headerEl.nextElementSibling;
     const chevron = headerEl.querySelector('.spot-group-chevron');
+    const isOpen = body.classList.toggle('open');
+    chevron.textContent = isOpen ? '▼' : '▶';
+    haptic(10);
+    playClick();
+  };
+
+  window.toggleBeachIntel = function (btnEl) {
+    const body = btnEl.nextElementSibling;
+    const chevron = btnEl.querySelector('.spot-group-chevron');
     const isOpen = body.classList.toggle('open');
     chevron.textContent = isOpen ? '▼' : '▶';
     haptic(10);

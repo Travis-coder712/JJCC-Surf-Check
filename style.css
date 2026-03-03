@@ -2016,6 +2016,93 @@ body.surfer-mode .spot-group-count {
   color: var(--text);
 }
 
+/* ===== Beach Intel Section ===== */
+.beach-intel-section {
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.beach-intel-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--surface-alt, rgba(0,0,0,0.03));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  transition: background 0.2s;
+}
+.beach-intel-toggle:hover {
+  background: var(--surface-hover, rgba(0,0,0,0.06));
+}
+.beach-intel-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.beach-intel-body.open {
+  max-height: 800px;
+}
+.beach-intel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 10px 0 6px;
+}
+.beach-intel-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+.beach-intel-item strong {
+  color: var(--text);
+  display: block;
+  margin-bottom: 1px;
+  font-size: 0.8rem;
+}
+.intel-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+  margin-top: 1px;
+}
+.beach-intel-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+}
+.intel-sources-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.intel-source-link {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  background: var(--accent, #3b82f6);
+  color: #fff !important;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.intel-source-link:hover {
+  opacity: 0.85;
+}
+
 /* ===== Movie Categories ===== */
 .movie-category {
   margin-bottom: 10px;
@@ -2099,6 +2186,22 @@ body.surfer-mode .movie-category-count {
   }
   .movie-category-body .movie-card {
     border-color: rgba(255,255,255,0.08);
+  }
+  .beach-intel-toggle {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+  }
+  .beach-intel-toggle:hover {
+    background: rgba(255,255,255,0.08);
+  }
+  .beach-intel-section {
+    border-color: rgba(255,255,255,0.08);
+  }
+  .beach-intel-sources {
+    border-color: rgba(255,255,255,0.08);
+  }
+  .intel-source-link {
+    background: rgba(59,130,246,0.75);
   }
 }
 
