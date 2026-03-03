@@ -1219,6 +1219,14 @@
 
   // ── UI Rendering — Choice-based flow ────────────────────────────
 
+  function windQualityBadge(s) {
+    const diff = angleDiff(s.windDir, s.beach.idealOffshore);
+    if (diff <= 30) return `<span class="wind-qual wind-offshore">🟢 Offshore</span>`;
+    if (diff <= 70) return `<span class="wind-qual wind-cross-off">🟡 Cross-offshore</span>`;
+    if (diff <= 110) return `<span class="wind-qual wind-cross">🟠 Cross-shore</span>`;
+    return `<span class="wind-qual wind-onshore">🔴 Onshore</span>`;
+  }
+
   function renderResultCard(s, opts = {}) {
     const col = scoreColor(s.overall);
     const cond = getWaveCondition(s);
@@ -1255,6 +1263,9 @@
     const timeNote = opts.showTime ? ` · Best at ${formatHour(s.time)}` : '';
     const expanded = opts.expanded ? ' expanded' : '';
 
+    // Collapsed header conditions line
+    const condLine = `<span class="result-header-conditions">${s.effectiveH.toFixed(1)}m · ${windQualityBadge(s)} · ${Math.round(s.windSpeed)}km/h</span>`;
+
     return `
       <div class="result-card score-${col}${expanded}" onclick="this.classList.toggle('expanded')">
         <div class="result-card-header">
@@ -1263,6 +1274,7 @@
           <div class="result-info">
             <h4>${s.beach.name}</h4>
             <span>${s.beach.location} · ${scoreLabel(s.overall)}${timeNote}</span>
+            ${condLine}
           </div>
           <span class="result-chevron">▼</span>
         </div>
@@ -1297,11 +1309,11 @@
       </div>`;
   }
 
+  let activeChoiceType = null;
+
   function renderChoiceCards() {
     const cardsDiv = document.getElementById('choice-cards');
-    const resultsDiv = document.getElementById('choice-results');
-    cardsDiv.style.display = '';
-    resultsDiv.style.display = 'none';
+    activeChoiceType = null;
 
     const goNow = state.goNow;
     const bestToday = state.bestTodayList[0];
@@ -1319,7 +1331,7 @@
       }
     }
 
-    // Build preview strings — wave height shown in all modes
+    // Build preview strings
     let nowPreview = 'Checking...';
     if (goNow) {
       const ws = getWaveSizeLabel(goNow.effectiveH);
@@ -1338,7 +1350,7 @@
       forecastPreview = `${bestFutureDay.label}: ${bestFuture.effectiveH.toFixed(1)}m ${ws.emoji} at ${bestFuture.beach.name}`;
     }
 
-    // Flat day callout — if even the best spot is flat
+    // Flat day callout
     let flatCallout = '';
     if (goNow && goNow.effectiveH < 0.2) {
       const randomMovie = SURF_MOVIES[Math.floor(Math.random() * SURF_MOVIES.length)];
@@ -1346,7 +1358,7 @@
     }
 
     cardsDiv.innerHTML = `${flatCallout}
-      <div class="choice-card" onclick="selectChoice('now')">
+      <div class="choice-card" id="choice-card-now" onclick="selectChoice('now')">
         <div class="choice-card-left">
           <div class="choice-emoji">🏄</div>
           <div>
@@ -1356,7 +1368,8 @@
         </div>
         ${goNow ? `<div class="choice-score ${scoreColor(goNow.overall)}">${goNow.overall}</div>` : ''}
       </div>
-      <div class="choice-card" onclick="selectChoice('today')">
+      <div class="choice-results-inline" id="choice-inline-now"></div>
+      <div class="choice-card" id="choice-card-today" onclick="selectChoice('today')">
         <div class="choice-card-left">
           <div class="choice-emoji">☀️</div>
           <div>
@@ -1366,7 +1379,8 @@
         </div>
         ${bestToday ? `<div class="choice-score ${scoreColor(bestToday.overall)}">${bestToday.overall}</div>` : ''}
       </div>
-      <div class="choice-card" onclick="selectChoice('forecast')">
+      <div class="choice-results-inline" id="choice-inline-today"></div>
+      <div class="choice-card" id="choice-card-forecast" onclick="selectChoice('forecast')">
         <div class="choice-card-left">
           <div class="choice-emoji">📅</div>
           <div>
@@ -1376,126 +1390,66 @@
         </div>
         ${bestFuture ? `<div class="choice-score ${scoreColor(bestFuture.overall)}">${bestFuture.overall}</div>` : ''}
       </div>
+      <div class="choice-results-inline" id="choice-inline-forecast"></div>
     `;
+  }
+
+  function getInlineResults(type) {
+    if (type === 'now') {
+      const sorted = [...state.currentScores].sort((a, b) => b.overall - a.overall).slice(0, 3);
+      return sorted.map((s, i) => renderResultCard(s, { rank: i + 1 })).join('');
+    } else if (type === 'today') {
+      const top3 = state.bestTodayList.slice(0, 3);
+      return top3.map((s, i) => renderResultCard(s, { rank: i + 1, showTime: true })).join('');
+    } else {
+      // Forecast — best 2 spots per day, 3 days
+      const days = state.nextDaysList.slice(0, 3);
+      return days.map(day => {
+        const top2 = day.beaches.slice(0, 2);
+        if (top2.length === 0) return '';
+        return top2.map((s, i) => {
+          const timeNote = top2.length > 1 && top2[0].time !== top2[1].time;
+          return renderResultCard(s, { dayLabel: i === 0 ? day.label : '', showTime: true });
+        }).join('');
+      }).join('');
+    }
   }
 
   window.selectChoice = function (type) {
     haptic(15); playClick();
-    const cardsDiv = document.getElementById('choice-cards');
-    const resultsDiv = document.getElementById('choice-results');
-    let html = '';
 
-    if (type === 'now') {
-      const sorted = [...state.currentScores].sort((a, b) => b.overall - a.overall).slice(0, 3);
-      html = `
-        <div class="results-header">
-          <button class="back-btn" onclick="backToChoices()">← Back</button>
-          <h3>🏄 Right Now — Top 3</h3>
-        </div>
-        <div class="results-list">
-          ${sorted.map((s, i) => renderResultCard(s, { rank: i + 1, expanded: i === 0 })).join('')}
-        </div>`;
-    } else if (type === 'today') {
-      const top3 = state.bestTodayList.slice(0, 3);
-      html = `
-        <div class="results-header">
-          <button class="back-btn" onclick="backToChoices()">← Back</button>
-          <h3>☀️ Best Today — Top 3</h3>
-        </div>
-        <div class="results-list">
-          ${top3.map((s, i) => renderResultCard(s, { rank: i + 1, showTime: true, expanded: i === 0 })).join('')}
-        </div>`;
-    } else {
-      // Forecast — best pick per day
-      html = `
-        <div class="results-header">
-          <button class="back-btn" onclick="backToChoices()">← Back</button>
-          <h3>📅 Next Few Days</h3>
-        </div>
-        <div class="results-list">
-          ${state.nextDaysList.map((day, idx) => {
-            const best = day.beaches[0];
-            if (!best) return '';
-            let alsoGood = '';
-            if (day.beaches.length > 1) {
-              alsoGood = `<div class="also-good" onclick="event.stopPropagation()">
-                <h5>Also good on ${day.label}:</h5>
-                ${day.beaches.slice(1, 3).map(s => {
-                  const c = scoreColor(s.overall);
-                  return `<div class="also-good-row"><div class="day-beach-score ${c}">${s.overall}</div><span>${s.beach.name} at ${formatHour(s.time)}</span></div>`;
-                }).join('')}
-              </div>`;
-            }
-            // Build card manually to insert alsoGood before actions
-            const col = scoreColor(best.overall);
-            const cond = getWaveCondition(best);
-            const explanation = generateExplanation(best, state.mode);
-            const factors = getTopFactors(best, state.mode);
-            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${best.beach.lat},${best.beach.lng}&origin=-38.352,144.296`;
-            const fWs = getWaveSizeLabel(best.effectiveH);
-            const fWaveHero = `<div class="wave-hero ${fWs.warning ? 'wave-hero-warning' : 'wave-hero-' + fWs.cls}" style="margin:0 16px 10px">
-              <div class="wave-hero-height">${best.effectiveH.toFixed(1)}<span>m</span></div>
-              <div class="wave-hero-label">${fWs.emoji} ${fWs.label}</div>
-              ${fWs.warning ? `<div class="wave-hero-note">${fWs.warning}</div>` : ''}
-            </div>`;
-            const fEat = getEat(best.beach.id);
-            const fEatHtml = fEat ? `<div class="eat-recommendation" style="margin:0 16px 10px"><span class="eat-emoji">${fEat.emoji}</span><div><span class="eat-name">${fEat.name}</span><span class="eat-desc">${fEat.desc}</span></div></div>` : '';
-            const fMovie = getRandomMovie();
-            const fMovieHtml = `<div class="eat-recommendation movie-rec" style="margin:0 16px 10px"><span class="eat-emoji">🎬</span><div><span class="eat-name">${fMovie.title} (${fMovie.year})</span><span class="eat-desc">${fMovie.desc} · <em>${fMovie.stream}</em></span></div></div>`;
-            return `
-              <div class="result-card score-${col}${idx === 0 ? ' expanded' : ''}" onclick="this.classList.toggle('expanded')">
-                <div class="result-card-header">
-                  <div class="result-day-label">${day.label}</div>
-                  <div class="rec-score-ring ${col}" style="width:48px;height:48px;font-size:1.1rem">${best.overall}</div>
-                  <div class="result-info">
-                    <h4>${best.beach.name}</h4>
-                    <span>Best at ${formatHour(best.time)} · ${scoreLabel(best.overall)}</span>
-                  </div>
-                  <span class="result-chevron">▼</span>
-                </div>
-                <div class="result-card-body">
-                  <div class="rec-meta-row" style="padding:0 16px 10px">
-                    <span class="drive-chip">🚗 ${best.beach.driveMinutes} min</span>
-                    ${factors.map(f => `<span class="factor-chip ${f.positive ? 'pos' : 'neg'}">${f.icon} ${f.label}</span>`).join('')}
-                  </div>
-                  ${fWaveHero}
-                  <div class="wave-snapshot wave-snapshot-sm" style="margin:0 16px 10px">
-                    <div class="wave-snap-item wave-snap-height">
-                      <span class="wave-snap-val">${best.effectiveH.toFixed(1)}m</span>
-                      <span class="wave-snap-lbl">Waves</span>
-                    </div>
-                    <div class="wave-snap-item wave-snap-cond ${cond.cls}">
-                      <span class="wave-snap-val">${cond.emoji} ${cond.label}</span>
-                      <span class="wave-snap-lbl">Conditions</span>
-                    </div>
-                    <div class="wave-snap-item wave-snap-tide">
-                      <span class="wave-snap-val">${best.tide.trend === 'Rising' ? '↗️' : best.tide.trend === 'Falling' ? '↘️' : '➡️'} ${best.tide.level}</span>
-                      <span class="wave-snap-lbl">${best.tide.nextLabel || best.tide.label}</span>
-                    </div>
-                  </div>
-                  ${fEatHtml}
-                  ${fMovieHtml}
-                  <div class="rec-explanation" style="margin:0 16px;border-radius:var(--radius-sm)">${explanation}</div>
-                  ${alsoGood}
-                  <div class="rec-actions" style="padding:14px 16px">
-                    <a href="${mapsUrl}" target="_blank" rel="noopener" class="nav-btn" onclick="event.stopPropagation()">📍 Navigate from Jan Juc</a>
-                  </div>
-                </div>
-              </div>`;
-          }).join('')}
-        </div>`;
+    const types = ['now', 'today', 'forecast'];
+    // If clicking the same one that's open, collapse it
+    if (activeChoiceType === type) {
+      const container = document.getElementById(`choice-inline-${type}`);
+      const card = document.getElementById(`choice-card-${type}`);
+      container.innerHTML = '';
+      container.classList.remove('open');
+      card.classList.remove('choice-expanded');
+      activeChoiceType = null;
+      return;
     }
 
-    cardsDiv.style.display = 'none';
-    resultsDiv.style.display = 'block';
-    resultsDiv.innerHTML = html;
-    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+    // Collapse any currently open
+    if (activeChoiceType) {
+      const oldContainer = document.getElementById(`choice-inline-${activeChoiceType}`);
+      const oldCard = document.getElementById(`choice-card-${activeChoiceType}`);
+      if (oldContainer) { oldContainer.innerHTML = ''; oldContainer.classList.remove('open'); }
+      if (oldCard) oldCard.classList.remove('choice-expanded');
+    }
 
-  window.backToChoices = function () {
-    haptic(10); playClick();
-    document.getElementById('choice-cards').style.display = '';
-    document.getElementById('choice-results').style.display = 'none';
+    // Expand the new one
+    const container = document.getElementById(`choice-inline-${type}`);
+    const card = document.getElementById(`choice-card-${type}`);
+    container.innerHTML = getInlineResults(type);
+    container.classList.add('open');
+    card.classList.add('choice-expanded');
+    activeChoiceType = type;
+
+    // Smooth scroll to show results
+    requestAnimationFrame(() => {
+      container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
   };
 
   // ── Beach Detail Modal (from map) ──────────────────────────────

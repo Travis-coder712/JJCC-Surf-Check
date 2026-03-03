@@ -1156,6 +1156,45 @@ body.surfer-mode.logger-mode .hero {
 .choice-score.yellow { background: linear-gradient(135deg, #ca8a04, #eab308); }
 .choice-score.red { background: linear-gradient(135deg, #dc2626, #ef4444); }
 
+/* ===== Inline Choice Results ===== */
+.choice-card.choice-expanded {
+  border-left: 3px solid var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+body.surfer-mode .choice-card.choice-expanded {
+  border-left-color: var(--accent-warm);
+}
+.choice-results-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  padding: 0;
+}
+.choice-results-inline.open {
+  max-height: 5000px;
+  opacity: 1;
+  padding: 4px 0 8px;
+}
+.choice-results-inline .result-card {
+  border-radius: var(--radius-sm);
+}
+
+/* ===== Result Header Conditions Line ===== */
+.result-header-conditions {
+  display: block;
+  font-size: 0.73rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.wind-qual {
+  font-weight: 600;
+  font-size: 0.73rem;
+}
+
 /* ===== Results Header & Back Button ===== */
 .results-header {
   display: flex;
