@@ -1090,6 +1090,50 @@ body.surfer-mode.logger-mode .hero {
   flex-direction: column;
   gap: 10px;
 }
+/* ===== Tide Banner ===== */
+.tide-banner {
+  margin: 0 16px 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  text-align: center;
+  font-weight: 600;
+}
+.tide-banner.tide-high {
+  background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.08));
+  border: 1px solid rgba(59,130,246,0.3);
+}
+.tide-banner.tide-mid {
+  background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.06));
+  border: 1px solid rgba(34,197,94,0.3);
+}
+.tide-banner.tide-low {
+  background: linear-gradient(135deg, rgba(234,179,8,0.15), rgba(234,179,8,0.08));
+  border: 1px solid rgba(234,179,8,0.3);
+}
+.tide-banner-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}
+.tide-banner-icon { font-size: 1.3rem; }
+.tide-banner-level {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.tide-banner-trend {
+  font-weight: 600;
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+.tide-banner-detail {
+  font-size: 0.78rem;
+  opacity: 0.7;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
 .choice-card {
   background: var(--bg-card);
   border-radius: var(--radius);

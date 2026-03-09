@@ -17,7 +17,7 @@
       name: 'Torquay Front Beach',
       location: 'Torquay',
       lat: -38.3310, lng: 144.3260,
-      facing: 90, idealOffshore: 295,
+      facing: 90, idealOffshore: 295, bestTide: 'All tides',
       swellWindow: [90, 200],
       swellExposure: 0.35,
       familySafety: 5,
@@ -32,7 +32,7 @@
       location: 'Torquay',
       lat: -38.3400, lng: 144.3150,
       mapLat: -38.3445, mapLng: 144.3080,
-      facing: 155, idealOffshore: 335,
+      facing: 155, idealOffshore: 335, bestTide: 'Low-Mid',
       swellWindow: [160, 250],
       swellExposure: 0.85,
       familySafety: 3,
@@ -46,7 +46,7 @@
       name: 'Jan Juc',
       location: 'Jan Juc',
       lat: -38.3530, lng: 144.2980,
-      facing: 200, idealOffshore: 20,
+      facing: 200, idealOffshore: 20, bestTide: 'Low-Mid',
       swellWindow: [170, 260],
       swellExposure: 0.9,
       familySafety: 2,
@@ -60,7 +60,7 @@
       name: 'Bells Beach',
       location: 'Bells Beach',
       lat: -38.3690, lng: 144.2810,
-      facing: 168, idealOffshore: 330,
+      facing: 168, idealOffshore: 330, bestTide: 'Mid-High',
       swellWindow: [190, 280],
       swellExposure: 1.0,
       familySafety: 1,
@@ -75,7 +75,7 @@
       location: 'Anglesea',
       lat: -38.3960, lng: 144.2600,
       mapLat: -38.3880, mapLng: 144.2570,
-      facing: 155, idealOffshore: 330,
+      facing: 155, idealOffshore: 330, bestTide: 'Mid-High',
       swellWindow: [180, 270],
       swellExposure: 0.95,
       familySafety: 1,
@@ -89,7 +89,7 @@
       name: 'Anglesea Main Beach',
       location: 'Anglesea',
       lat: -38.4080, lng: 144.1920,
-      facing: 155, idealOffshore: 315,
+      facing: 155, idealOffshore: 315, bestTide: 'Low-Mid',
       swellWindow: [150, 250],
       swellExposure: 0.7,
       familySafety: 4,
@@ -104,7 +104,7 @@
       location: 'Anglesea',
       lat: -38.4010, lng: 144.1960,
       mapLat: -38.3990, mapLng: 144.2060, mapZoom: 14,
-      facing: 45, idealOffshore: 240,
+      facing: 45, idealOffshore: 240, bestTide: 'All tides',
       swellWindow: [50, 180],
       swellExposure: 0.25,
       familySafety: 5,
@@ -119,7 +119,7 @@
       location: 'Fairhaven',
       lat: -38.4750, lng: 144.0920,
       mapLat: -38.4700, mapLng: 144.0920,
-      facing: 180, idealOffshore: 0,
+      facing: 180, idealOffshore: 0, bestTide: 'All tides',
       swellWindow: [160, 260],
       swellExposure: 0.85,
       familySafety: 3,
@@ -133,7 +133,7 @@
       name: 'Lorne',
       location: 'Lorne',
       lat: -38.5420, lng: 143.9750,
-      facing: 115, idealOffshore: 295,
+      facing: 115, idealOffshore: 295, bestTide: 'Low-Mid',
       swellWindow: [120, 220],
       swellExposure: 0.45,
       familySafety: 4,
@@ -148,7 +148,7 @@
       location: 'Barwon Heads',
       lat: -38.2980, lng: 144.5050,
       mapLat: -38.2840, mapLng: 144.4980,
-      facing: 180, idealOffshore: 20,
+      facing: 180, idealOffshore: 20, bestTide: 'Low-Mid',
       swellWindow: [140, 240],
       swellExposure: 0.80,
       familySafety: 3,
@@ -658,15 +658,20 @@
   }
 
   // ── Tide approximation ────────────────────────────────────────
-  // Simplified harmonic model for Port Phillip / Western Victoria coast
+  // 5-constituent harmonic model calibrated for Torquay coast (western Victoria)
+  // Phases calibrated against BOM tide predictions for Torquay/Lorne area
   function estimateTide(date) {
-    const M2_PERIOD = 12.4206 * 3600000;
-    const S2_PERIOD = 12.0 * 3600000;
     const epoch = new Date('2024-01-01T00:00:00+11:00').getTime();
     const elapsed = date.getTime() - epoch;
-    const m2 = 0.38 * Math.cos(2 * Math.PI * elapsed / M2_PERIOD + 1.8);
-    const s2 = 0.14 * Math.cos(2 * Math.PI * elapsed / S2_PERIOD + 2.1);
-    return 0.80 + m2 + s2; // approximate metres above datum
+    const TWO_PI = 2 * Math.PI;
+    // Semi-diurnal constituents
+    const m2 = 0.56 * Math.cos(TWO_PI * elapsed / (12.4206 * 3600000) + 5.84);   // Main lunar
+    const s2 = 0.21 * Math.cos(TWO_PI * elapsed / (12.0000 * 3600000) + 3.64);   // Main solar
+    const n2 = 0.11 * Math.cos(TWO_PI * elapsed / (12.6584 * 3600000) + 0.69);   // Larger lunar elliptic
+    // Diurnal constituents
+    const k1 = 0.14 * Math.cos(TWO_PI * elapsed / (23.9345 * 3600000) + 2.01);   // Luni-solar diurnal
+    const o1 = 0.10 * Math.cos(TWO_PI * elapsed / (25.8193 * 3600000) + 5.66);   // Main lunar diurnal
+    return 0.80 + m2 + s2 + n2 + k1 + o1;
   }
 
   function tideState(date) {
@@ -1148,13 +1153,22 @@
     if (precip > 60) weatherMod = -5;
     if (weatherCode >= 80) weatherMod = -8;
 
-    const overall = Math.round(clamp(
-      windScore * 0.42 + swellScore * 0.42 + safetyMod + weatherMod + 16, // 16 baseline
-      0, 100
-    ));
-
+    // Tide modifier
     const effectiveH = (swellH || waveH) * beach.swellExposure;
     const tide = tideState(new Date(timeStr));
+    let tideMod = 0;
+    if (beach.bestTide && beach.bestTide !== 'All tides') {
+      if (matchesTide(beach.bestTide, tide.level)) {
+        tideMod = 4; // bonus for good tide
+      } else {
+        tideMod = -10; // penalty for wrong tide
+      }
+    }
+
+    const overall = Math.round(clamp(
+      windScore * 0.40 + swellScore * 0.40 + tideMod + safetyMod + weatherMod + 12,
+      0, 100
+    ));
 
     return {
       beach,
@@ -1460,7 +1474,28 @@
 
   let activeChoiceType = null;
 
+  function updateTideBanner() {
+    const banner = document.getElementById('tide-banner');
+    if (!banner) return;
+    const tide = tideState(new Date());
+    const h = Math.max(0, tide.height).toFixed(1);
+    const trendIcon = tide.trend === 'Rising' ? '↗' : tide.trend === 'Falling' ? '↘' : '→';
+    const levelClass = tide.level === 'High' ? 'tide-high' : tide.level === 'Low' ? 'tide-low' : 'tide-mid';
+    banner.className = `tide-banner ${levelClass}`;
+    banner.style.display = '';
+    banner.innerHTML = `
+      <div class="tide-banner-main">
+        <span class="tide-banner-icon">🌊</span>
+        <span class="tide-banner-level">${tide.level} Tide</span>
+        <span class="tide-banner-trend">${trendIcon} ${tide.trend}</span>
+      </div>
+      <div class="tide-banner-detail">
+        ${tide.nextLabel ? tide.nextLabel : ''} · ${h}m
+      </div>`;
+  }
+
   function renderChoiceCards() {
+    updateTideBanner();
     const cardsDiv = document.getElementById('choice-cards');
     activeChoiceType = null;
 
