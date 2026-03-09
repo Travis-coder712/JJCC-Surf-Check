@@ -80,9 +80,14 @@
         <h2 class="section-title">
           <span class="section-icon">🌊</span> Where to surf?
         </h2>
-        <button class="scoring-btn" onclick="openScoringModal()" aria-label="How ratings work">
-          <span>ℹ️</span> How ratings work
-        </button>
+        <div class="section-actions">
+          <button class="scoring-btn" onclick="openScoringGuide()" aria-label="Scoring guide">
+            <span>📖</span> Scoring Guide
+          </button>
+          <button class="scoring-btn" onclick="openScoringModal()" aria-label="How ratings work">
+            <span>ℹ️</span> Quick Summary
+          </button>
+        </div>
       </div>
       <div id="choice-cards" class="choice-grid"></div>
       <div id="choice-results" style="display:none"></div>

@@ -921,39 +921,57 @@
     const modeLabel = state.mode === 'family' ? 'Family' : state.mode === 'logger' ? 'Logger' : 'Surfer';
     const heightRange = state.mode === 'family' ? '0.3 – 1.0m' : state.mode === 'logger' ? '0.3 – 1.5m' : '0.8 – 2.5m';
 
+    modal.querySelector('.modal-header h2').textContent = 'ℹ️ Surf Rating System';
     modal.querySelector('.modal-body').innerHTML = `
       <h3>How the Surf Rating works</h3>
-      <p>Each beach gets a rating from <strong>0 to 100</strong> based on current and forecast conditions. The rating is tailored to your <strong>${modeLabel}</strong> mode.</p>
+      <p>Each beach gets a rating from <strong>0 to 100</strong> based on six factors, tailored to your <strong>${modeLabel}</strong> mode.</p>
 
       <div class="score-breakdown">
         <div class="score-factor">
-          <div class="factor-bar" style="width:42%">
-            <span class="factor-pct">42%</span>
-          </div>
+          <div class="factor-bar guide-period" style="width:25%"><span class="factor-pct">25%</span></div>
           <div class="factor-detail">
-            <strong>🌬️ Wind Quality</strong>
-            <p>Is the wind blowing offshore (from land to sea)? That's ideal — it grooms the waves. Onshore wind makes them messy. Each beach faces a different direction, so the same wind can be great for one beach and poor for another. Light winds are almost always good.</p>
+            <strong>🕐 Swell Period</strong>
+            <p>Longer period = cleaner, more powerful waves. 10+ seconds is great, under 6 is poor wind chop.</p>
           </div>
         </div>
         <div class="score-factor">
-          <div class="factor-bar" style="width:42%">
-            <span class="factor-pct">42%</span>
-          </div>
+          <div class="factor-bar guide-height" style="width:20%"><span class="factor-pct">20%</span></div>
           <div class="factor-detail">
-            <strong>🌊 Wave Quality</strong>
-            <p>Three things matter: <em>height</em> (${heightRange} is ideal in ${modeLabel} mode), <em>period</em> (longer = cleaner, 10+ seconds is great), and <em>direction</em> (does the swell actually reach this beach?).</p>
+            <strong>🌊 Swell Height</strong>
+            <p>${heightRange} is ideal in ${modeLabel} mode. Adjusted by each beach's swell exposure.</p>
           </div>
         </div>
         <div class="score-factor">
-          <div class="factor-bar" style="width:16%">
-            <span class="factor-pct">16%</span>
-          </div>
+          <div class="factor-bar guide-winddir" style="width:20%"><span class="factor-pct">20%</span></div>
           <div class="factor-detail">
-            <strong>🏖️ Beach Safety & Weather</strong>
-            <p>${state.mode === 'family' ? 'Sheltered, sandy beaches like Point Roadknight get a boost. Rocky, powerful spots like Bells get a penalty.' : state.mode === 'logger' ? 'Mellow, sandy beaches like Torquay Front and Anglesea get a boost. Heavy, reefbreak spots like Bells and Point Addis get a penalty — not ideal for longboarding.' : 'Minor adjustment for heavy rain. Beach type doesn\'t affect the surfer score.'} Heavy rain is a small negative.</p>
+            <strong>🌬️ Wind Direction</strong>
+            <p>Offshore (land to sea) is ideal. Onshore makes waves messy. Each beach has a different ideal wind direction.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-windspd" style="width:15%"><span class="factor-pct">15%</span></div>
+          <div class="factor-detail">
+            <strong>💨 Wind Speed</strong>
+            <p>Light wind is best. Onshore wind degrades quality much faster than offshore improves it.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-swelldir" style="width:10%"><span class="factor-pct">10%</span></div>
+          <div class="factor-detail">
+            <strong>🧭 Swell Direction</strong>
+            <p>Does the swell actually reach this beach? SW swells are most common on this coast.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-tide" style="width:10%"><span class="factor-pct">10%</span></div>
+          <div class="factor-detail">
+            <strong>🌙 Tide</strong>
+            <p>Each beach has a preferred tide stage. ${state.mode === 'family' ? 'Sheltered beaches score well at all tides.' : 'Reef breaks prefer mid-high, beach breaks prefer low-mid.'}</p>
           </div>
         </div>
       </div>
+
+      <p style="font-size:0.8rem;opacity:0.7;margin-top:8px">Tap <strong>📖 Scoring Guide</strong> for the full deep-dive explanation.</p>
 
       <h3>What the colours mean</h3>
       <div class="color-ranges">
@@ -990,10 +1008,107 @@
     document.getElementById('scoring-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
   };
+  window.openScoringGuide = function () {
+    renderScoringGuide();
+    document.getElementById('scoring-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
   window.closeScoringModal = function () {
     document.getElementById('scoring-modal').classList.remove('open');
     document.body.style.overflow = '';
   };
+
+  function renderScoringGuide() {
+    const modal = document.getElementById('scoring-modal');
+    modal.querySelector('.modal-header h2').textContent = '📖 Surf Scoring Guide';
+    const modeLabel = state.mode === 'family' ? 'Family' : state.mode === 'logger' ? 'Logger' : 'Surfer';
+    const heightRange = state.mode === 'family' ? '0.3-0.6m' : state.mode === 'logger' ? '0.5-1.5m' : '0.8-2.5m';
+
+    modal.querySelector('.modal-body').innerHTML = `
+      <h3>The Science of Surf Scoring</h3>
+      <p>Each beach scores <strong>0-100</strong> based on six measurable factors. The weighting reflects decades of surf forecasting wisdom: wave energy (proportional to height squared multiplied by period) is the foundation, while wind quality determines whether that energy produces clean or chaotic waves.</p>
+
+      <h3>Factor Breakdown</h3>
+      <div class="score-breakdown">
+        <div class="score-factor">
+          <div class="factor-bar guide-period" style="width:25%"><span class="factor-pct">25%</span></div>
+          <div class="factor-detail">
+            <strong>🕐 Swell Period</strong>
+            <p>The #1 quality indicator. Period is the time (in seconds) between wave crests. Longer period = waves generated by distant storms that have had time to organise into clean, powerful lines. Under 6 seconds is messy wind chop. 10-16 seconds is excellent ground swell.</p>
+            <div class="guide-scale">
+              <span class="guide-tier poor">&lt;6s Poor</span>
+              <span class="guide-tier avg">6-8s OK</span>
+              <span class="guide-tier good">8-10s Good</span>
+              <span class="guide-tier great">10-16s Great</span>
+            </div>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-height" style="width:20%"><span class="factor-pct">20%</span></div>
+          <div class="factor-detail">
+            <strong>🌊 Swell Height</strong>
+            <p>Ideal height depends on who you are. ${state.mode === 'family' ? 'In Family mode, gentle 0.3-0.6m waves score highest — safe and fun for kids.' : state.mode === 'logger' ? 'In Logger mode, 0.5-1.5m is the sweet spot — enough power for glide without being heavy.' : 'In Surfer mode, 0.8-2.5m is ideal — enough face to work with.'} Adjusted by each beach's swell exposure.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-winddir" style="width:20%"><span class="factor-pct">20%</span></div>
+          <div class="factor-detail">
+            <strong>🌬️ Wind Direction</strong>
+            <p>Offshore wind (from land to sea) grooms wave faces for clean rides. Onshore wind (sea to land) makes waves mushy and choppy. Each beach faces a different direction, so the same wind can be perfect for one spot and terrible for another.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-windspd" style="width:15%"><span class="factor-pct">15%</span></div>
+          <div class="factor-detail">
+            <strong>💨 Wind Speed</strong>
+            <p>Light winds (&lt;8 km/h) are almost always good — glassy conditions. But the impact of stronger winds is <em>asymmetric</em>: 20 km/h onshore destroys wave quality, while 20 km/h offshore is still quite surfable. This is the key insight most basic forecasts miss.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-swelldir" style="width:10%"><span class="factor-pct">10%</span></div>
+          <div class="factor-detail">
+            <strong>🧭 Swell Direction</strong>
+            <p>Southwest swells are dominant on this coast. Some beaches (like Bells) are perfectly positioned for SW swell, while others (like Roadknight) are sheltered by headlands and need a more southerly approach.</p>
+          </div>
+        </div>
+        <div class="score-factor">
+          <div class="factor-bar guide-tide" style="width:10%"><span class="factor-pct">10%</span></div>
+          <div class="factor-detail">
+            <strong>🌙 Tide</strong>
+            <p>Each beach has a preferred tide. Reef breaks like Bells work best mid-to-high when the reef is covered. Beach breaks like Jan Juc often prefer low-to-mid when sandbars are shallow. We use a 5-constituent harmonic tide model calibrated to Torquay.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Why Period is King</h3>
+      <p>Wave energy is proportional to <strong>Height&sup2; &times; Period</strong>. A 1m wave at 12 seconds carries <em>three times</em> the energy of a 1m wave at 4 seconds. But it's not just about power — longer period swell has travelled further, which naturally filters out messy, disorganised wave trains. The result: cleaner, more predictable waves that are easier to read and ride.</p>
+
+      <h3>Wind: The Make or Break</h3>
+      <p>Our scoring uses an <strong>asymmetric wind model</strong>. Here's why: 15 km/h of offshore wind actively improves wave quality by holding up the lip and creating a clean face. But 15 km/h of onshore wind doesn't just fail to help — it actively destroys wave shape, creating chop, closing out sections, and making timing nearly impossible.</p>
+      <p>That's why at the same wind speed, onshore conditions score much lower than offshore. Light wind (&lt;8 km/h) from any direction scores well because there isn't enough force to significantly affect wave shape.</p>
+
+      <h3>Mode Differences</h3>
+      <div class="guide-modes">
+        <div class="guide-mode-card">
+          <strong>🏖️ Family</strong>
+          <p>Ideal: ${heightRange} gentle waves. Sheltered, sandy beaches like Roadknight and Torquay Front get a safety bonus. Strong wind of any kind is penalised — it makes conditions harder for kids.</p>
+        </div>
+        <div class="guide-mode-card">
+          <strong>🏄 Surfer</strong>
+          <p>Ideal: 0.8-2.5m with 10+ second period. No beach type penalty — reef and beach breaks are equally valid. Weather has minimal impact on experienced surfers.</p>
+        </div>
+        <div class="guide-mode-card">
+          <strong>🤙 Logger</strong>
+          <p>Ideal: 0.5-1.5m clean waves. Mellow, sandy-bottomed spots like Torquay Front and Anglesea get a bonus. Powerful reef breaks like Bells are penalised — not ideal for nose-riding and cross-stepping.</p>
+        </div>
+      </div>
+
+      <h3>Data Sources</h3>
+      <p><strong>Waves:</strong> Open-Meteo Marine API — free, no API key, global WaveWatch III model data including separated swell and wind-wave components, peak period, and swell direction.</p>
+      <p><strong>Wind & Weather:</strong> Open-Meteo Forecast API — high-resolution weather model with hourly wind speed, gusts, direction, and precipitation.</p>
+      <p><strong>Tides:</strong> 5-constituent harmonic model (M2, S2, N2, K1, O1) calibrated to Torquay tidal data. Approximate but reliable for relative high/mid/low status.</p>
+    `;
+  }
 
   // ── API fetching ───────────────────────────────────────────────
   async function fetchWeather() {
@@ -1011,7 +1126,7 @@
     const lats = API_GROUPS.map(g => g.lat).join(',');
     const lngs = API_GROUPS.map(g => g.lng).join(',');
     const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lats}&longitude=${lngs}`
-      + `&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period`
+      + `&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period,swell_wave_peak_period,wind_wave_height,wind_wave_period,wind_wave_direction`
       + `&timezone=Australia%2FMelbourne&forecast_days=3`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Marine API failed');
@@ -1022,8 +1137,9 @@
 
   function scoreWind(windDir, windSpeed, beach, mode) {
     const diff = angleDiff(windDir, beach.idealOffshore);
+    const isOnshore = diff > 90;
 
-    // Direction score
+    // Direction score (0-100)
     let dirScore;
     if (diff <= 25) dirScore = 100;
     else if (diff <= 50) dirScore = 82;
@@ -1031,37 +1147,35 @@
     else if (diff <= 110) dirScore = 28;
     else dirScore = 8;
 
-    // Speed modifier
-    let speedMod = 1;
-    if (windSpeed < 5) {
-      // Very light — almost always fine
-      speedMod = 0.92;
-    } else if (windSpeed < 12) {
-      speedMod = 1.0; // ideal light breeze
-    } else if (windSpeed < 20) {
-      speedMod = diff > 90 ? 0.55 : 0.90; // moderate — matters if onshore
-    } else if (windSpeed < 30) {
-      speedMod = diff > 90 ? 0.30 : 0.75;
+    // Speed score (0-100) — asymmetric: onshore degrades faster
+    let speedScore;
+    if (windSpeed < 8) {
+      speedScore = 90; // glassy / very light — great regardless
+    } else if (windSpeed < 15) {
+      speedScore = isOnshore ? 60 : 100; // light breeze
+    } else if (windSpeed < 25) {
+      speedScore = isOnshore ? 25 : 85; // moderate
+    } else if (windSpeed < 35) {
+      speedScore = isOnshore ? 10 : 60; // strong
     } else {
-      speedMod = diff > 90 ? 0.15 : 0.50; // strong
+      speedScore = isOnshore ? 5 : 30; // very strong
     }
 
-    // Family mode: penalise strong wind regardless of direction
+    // Family mode: cap speed score when windy
     if (mode === 'family' && windSpeed > 25) {
-      speedMod *= 0.6;
+      speedScore = Math.min(speedScore, 40);
     }
 
-    return Math.round(clamp(dirScore * speedMod, 0, 100));
+    return { dirScore, speedScore };
   }
 
   function scoreSwell(waveH, wavePeriod, waveDir, beach, mode) {
     // Effective height at this beach
     const effectiveH = waveH * beach.swellExposure;
 
-    // — Height score —
+    // — Height score (mode-specific, 0-100) —
     let heightScore;
     if (mode === 'family') {
-      // Families want gentle waves: 0.2–1.0 m effective
       if (effectiveH < 0.15)      heightScore = 20;
       else if (effectiveH < 0.3)  heightScore = 55;
       else if (effectiveH <= 0.6) heightScore = 100;
@@ -1070,7 +1184,6 @@
       else if (effectiveH <= 2.0) heightScore = 15;
       else                        heightScore = 5;
     } else if (mode === 'logger') {
-      // Loggers want small-medium clean waves: 0.3–1.5m
       if (effectiveH < 0.15)      heightScore = 10;
       else if (effectiveH < 0.3)  heightScore = 35;
       else if (effectiveH < 0.5)  heightScore = 70;
@@ -1080,7 +1193,6 @@
       else if (effectiveH <= 2.5) heightScore = 25;
       else                        heightScore = 10;
     } else {
-      // Surfers want rideable waves: 0.6–2.5 m
       if (effectiveH < 0.25)      heightScore = 5;
       else if (effectiveH < 0.5)  heightScore = 25;
       else if (effectiveH < 0.8)  heightScore = 55;
@@ -1090,19 +1202,20 @@
       else                        heightScore = 40;
     }
 
-    // — Period score —
+    // — Period score (revised: stricter low-end thresholds) —
     let periodScore;
-    if (wavePeriod < 5)        periodScore = 20;
-    else if (wavePeriod < 7)   periodScore = 40;
-    else if (wavePeriod < 9)   periodScore = 60;
-    else if (wavePeriod < 12)  periodScore = 85;
-    else if (wavePeriod <= 16) periodScore = 100;
-    else                       periodScore = 90;
+    if (wavePeriod < 5)        periodScore = 5;   // unsurfable wind chop
+    else if (wavePeriod < 6)   periodScore = 15;  // poor messy wind swell
+    else if (wavePeriod < 8)   periodScore = 40;  // marginal
+    else if (wavePeriod < 10)  periodScore = 65;  // average ground swell
+    else if (wavePeriod < 12)  periodScore = 85;  // good
+    else if (wavePeriod <= 16) periodScore = 100; // great distant swell
+    else                       periodScore = 90;  // powerful but can overwhelm
 
     // — Direction score (does swell reach beach?) —
     let dirScore;
     if (waveDir === undefined || waveDir === null) {
-      dirScore = 60; // unknown, assume moderate
+      dirScore = 60;
     } else {
       const diffFromFacing = angleDiff(waveDir, beach.facing);
       if (diffFromFacing <= 40)       dirScore = 100;
@@ -1111,7 +1224,12 @@
       else                            dirScore = 10;
     }
 
-    return Math.round(clamp(heightScore * 0.50 + periodScore * 0.25 + dirScore * 0.25, 0, 100));
+    return { heightScore, periodScore, dirScore, effectiveH };
+  }
+
+  function scoreTide(beach, tide) {
+    if (!beach.bestTide || beach.bestTide === 'All tides') return 70;
+    return matchesTide(beach.bestTide, tide.level) ? 100 : 20;
   }
 
   function scoreBeach(beach, hourIndex, weather, marine, mode) {
@@ -1131,42 +1249,43 @@
     const swellH = marineData.hourly.swell_wave_height?.[hourIndex] ?? waveH;
     const swellDir = marineData.hourly.swell_wave_direction?.[hourIndex] ?? waveDir;
     const swellPeriod = marineData.hourly.swell_wave_period?.[hourIndex] ?? wavePeriod;
+    const peakPeriod = marineData.hourly.swell_wave_peak_period?.[hourIndex] ?? swellPeriod;
     const temp = weather.hourly.temperature_2m[hourIndex] ?? 20;
     const weatherCode = weather.hourly.weathercode[hourIndex] ?? 0;
     const precip = weather.hourly.precipitation_probability[hourIndex] ?? 0;
     const timeStr = weather.hourly.time[hourIndex];
 
-    const windScore = scoreWind(windDir, windSpeed, beach, mode);
-    const swellScore = scoreSwell(swellH || waveH, swellPeriod || wavePeriod, swellDir ?? waveDir, beach, mode);
+    const wind = scoreWind(windDir, windSpeed, beach, mode);
+    const swell = scoreSwell(swellH || waveH, peakPeriod || wavePeriod, swellDir ?? waveDir, beach, mode);
 
     // Beach suitability bonus/penalty
     let safetyMod = 0;
     if (mode === 'family') {
-      safetyMod = (beach.familySafety - 3) * 6; // -12 to +12
+      safetyMod = (beach.familySafety - 3) * 3; // -6 to +6
     } else if (mode === 'logger') {
       const lf = LOGGER_FRIENDLY[beach.id] || 3;
-      safetyMod = (lf - 3) * 5; // -10 to +10
+      safetyMod = (lf - 3) * 2.5; // -5 to +5
     }
 
     // Weather minor modifier
     let weatherMod = 0;
-    if (precip > 60) weatherMod = -5;
-    if (weatherCode >= 80) weatherMod = -8;
+    if (precip > 60) weatherMod = -3;
+    if (weatherCode >= 80) weatherMod = -5;
 
-    // Tide modifier
-    const effectiveH = (swellH || waveH) * beach.swellExposure;
+    // Tide score (0-100)
+    const effectiveH = swell.effectiveH;
     const tide = tideState(new Date(timeStr));
-    let tideMod = 0;
-    if (beach.bestTide && beach.bestTide !== 'All tides') {
-      if (matchesTide(beach.bestTide, tide.level)) {
-        tideMod = 4; // bonus for good tide
-      } else {
-        tideMod = -10; // penalty for wrong tide
-      }
-    }
+    const tideScore = scoreTide(beach, tide);
 
+    // New weighted formula: Period 25%, Height 20%, Wind Dir 20%, Wind Speed 15%, Swell Dir 10%, Tide 10%
     const overall = Math.round(clamp(
-      windScore * 0.40 + swellScore * 0.40 + tideMod + safetyMod + weatherMod + 12,
+      swell.periodScore * 0.25 +
+      swell.heightScore * 0.20 +
+      wind.dirScore * 0.20 +
+      wind.speedScore * 0.15 +
+      swell.dirScore * 0.10 +
+      tideScore * 0.10 +
+      safetyMod + weatherMod,
       0, 100
     ));
 
@@ -1175,14 +1294,15 @@
       hourIndex,
       time: timeStr,
       overall,
-      windScore,
-      swellScore,
+      wind,
+      swell,
+      tideScore,
       windDir,
       windSpeed,
       windGust,
       waveH: swellH || waveH,
       effectiveH,
-      wavePeriod: swellPeriod || wavePeriod,
+      wavePeriod: peakPeriod || wavePeriod,
       waveDir: swellDir ?? waveDir,
       temp,
       weatherCode,
@@ -1218,7 +1338,10 @@
       s.wavePeriod < 10 ? 'moderate period' :
       s.wavePeriod < 13 ? 'nicely spaced, well-organised swell' : 'long-range groundswell, powerful and clean';
 
-    parts.push(`<strong>Waves:</strong> ${s.effectiveH.toFixed(1)}m (${hDesc}) with a ${Math.round(s.wavePeriod)}s period — ${pDesc}.`);
+    const periodQual = s.swell.periodScore >= 85 ? 'excellent' :
+      s.swell.periodScore >= 65 ? 'good' :
+      s.swell.periodScore >= 40 ? 'average' : 'poor';
+    parts.push(`<strong>Waves:</strong> ${s.effectiveH.toFixed(1)}m (${hDesc}) with a ${Math.round(s.wavePeriod)}s period — ${pDesc}. Period quality is ${periodQual} (${s.swell.periodScore}/100).`);
 
     if (mode === 'family') {
       if (s.beach.familySafety >= 4) {
