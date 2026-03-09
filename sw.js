@@ -1,4 +1,4 @@
-const CACHE_NAME = 'surf-check-v12';
+const CACHE_NAME = 'surf-check-v13';
 const STATIC_ASSETS = [
   '/JJCC-Surf-Check/',
   '/JJCC-Surf-Check/index.html',

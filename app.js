@@ -1699,6 +1699,100 @@
       </div>
       <div class="choice-results-inline" id="choice-inline-forecast"></div>
     `;
+
+    // Celebration for special beaches
+    if (goNow && goNow.overall >= 50) {
+      showBeachCelebration(goNow);
+    }
+  }
+
+  // ── Beach celebrations ───────────────────────────────────────
+  const CELEBRATIONS = {
+    'torquay-front': {
+      title: 'Cosy Corner',
+      subtitle: 'A Harry Classic',
+      emoji: '☀️',
+      bg: 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444)',
+      confetti: ['🏖️', '☀️', '🐚', '🦀', '🌴'],
+    },
+    'roadknight': {
+      title: 'A Classic Day Beckons',
+      subtitle: 'Cannoli on the way home',
+      emoji: '🤌',
+      bg: 'linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899)',
+      confetti: ['🤌', '🍨', '🌊', '✨', '🎉'],
+    },
+    'jan-juc': {
+      title: 'Home Break',
+      subtitle: "Let's Rock",
+      emoji: '🤙',
+      bg: 'linear-gradient(135deg, #22c55e, #06b6d4, #3b82f6)',
+      confetti: ['🤙', '🏄', '🔥', '💪', '🌊'],
+    },
+  };
+
+  let celebrationShownForSession = null;
+
+  function showBeachCelebration(score) {
+    const c = CELEBRATIONS[score.beach.id];
+    if (!c) return;
+    // Only show once per session per beach
+    if (celebrationShownForSession === score.beach.id) return;
+    celebrationShownForSession = score.beach.id;
+
+    // Generate confetti particles
+    let confettiHTML = '';
+    for (let i = 0; i < 40; i++) {
+      const emoji = c.confetti[i % c.confetti.length];
+      const left = Math.random() * 100;
+      const delay = Math.random() * 0.8;
+      const dur = 1.8 + Math.random() * 1.5;
+      const size = 0.8 + Math.random() * 1.2;
+      const drift = (Math.random() - 0.5) * 120;
+      confettiHTML += `<span class="celeb-confetti" style="left:${left}%;animation-delay:${delay}s;animation-duration:${dur}s;font-size:${size}rem;--drift:${drift}px">${emoji}</span>`;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'celeb-overlay';
+    overlay.onclick = () => dismissCelebration(overlay);
+    overlay.innerHTML = `
+      <div class="celeb-bg" style="background:${c.bg}"></div>
+      <div class="celeb-confetti-wrap">${confettiHTML}</div>
+      <div class="celeb-content">
+        <div class="celeb-emoji">${c.emoji}</div>
+        <h2 class="celeb-title">${c.title}</h2>
+        <p class="celeb-subtitle">${c.subtitle}</p>
+        <div class="celeb-score">
+          <span class="celeb-score-num">${score.overall}</span>
+          <span class="celeb-score-label">Score</span>
+        </div>
+        <p class="celeb-beach">${score.beach.name} is firing right now</p>
+        <button class="celeb-dismiss" onclick="event.stopPropagation()">🏄 Let's Go!</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    // Animate in
+    requestAnimationFrame(() => overlay.classList.add('celeb-active'));
+
+    // Dismiss button
+    overlay.querySelector('.celeb-dismiss').onclick = (e) => {
+      e.stopPropagation();
+      dismissCelebration(overlay);
+    };
+
+    // Auto-dismiss after 6 seconds
+    setTimeout(() => dismissCelebration(overlay), 6000);
+  }
+
+  function dismissCelebration(overlay) {
+    if (!overlay.parentNode) return;
+    overlay.classList.add('celeb-leaving');
+    setTimeout(() => {
+      overlay.remove();
+      document.body.style.overflow = '';
+    }, 500);
   }
 
   function getInlineResults(type) {
