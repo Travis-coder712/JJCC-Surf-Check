@@ -1,4 +1,4 @@
-const CACHE_NAME = 'surf-check-v13';
+const CACHE_NAME = 'surf-check-v14';
 const STATIC_ASSETS = [
   '/JJCC-Surf-Check/',
   '/JJCC-Surf-Check/index.html',
@@ -25,7 +25,14 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch — network first for API, cache first for static
+// Listen for skip waiting message from app
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+// Fetch — network first for static (to detect updates), cache fallback for offline
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
@@ -43,8 +50,14 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Static assets: cache first
+  // Static assets: network first so updates are picked up, cache fallback for offline
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

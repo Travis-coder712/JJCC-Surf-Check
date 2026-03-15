@@ -5,6 +5,8 @@
 (function () {
   'use strict';
 
+  const APP_VERSION = '1.0.0';
+
   // ── Beach database ─────────────────────────────────────────────
   // facing: compass direction the beach faces (where you look out to sea)
   // idealOffshore: the wind direction that blows offshore for this beach
@@ -2405,11 +2407,48 @@
     }
   }
 
-  // Register service worker
+  // ── Version display & update detection ────────────────────────
+  function showVersion() {
+    const el = document.getElementById('app-version');
+    if (el) el.textContent = 'v' + APP_VERSION;
+  }
+
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      // Check for updates every 5 minutes
+      setInterval(() => reg.update(), 5 * 60 * 1000);
+
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBanner();
+          }
+        });
+      });
+    }).catch(() => {});
+
+    // If a new SW took over, reload
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+
+  function showUpdateBanner() {
+    if (document.getElementById('update-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'update-banner';
+    banner.innerHTML = `
+      <span>🆕 Update available!</span>
+      <button onclick="document.getElementById('update-banner').remove();navigator.serviceWorker.getRegistration().then(r=>{if(r&&r.waiting)r.waiting.postMessage({type:'SKIP_WAITING'})})">Update Now</button>
+      <button class="update-dismiss" onclick="this.parentNode.remove()">✕</button>
+    `;
+    document.body.appendChild(banner);
+    requestAnimationFrame(() => banner.classList.add('update-visible'));
   }
 
   // Go
+  showVersion();
   init();
 })();

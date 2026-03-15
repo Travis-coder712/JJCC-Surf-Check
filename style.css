@@ -712,6 +712,61 @@ body.surfer-mode.logger-mode .hero {
   font-size: 0.75rem;
   opacity: 0.7;
 }
+.footer-version {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  opacity: 0.45;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Update Banner ===== */
+#update-banner {
+  position: fixed;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 0 0 14px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  transition: top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+#update-banner.update-visible {
+  top: 0;
+}
+#update-banner button {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#update-banner button:hover {
+  background: rgba(255,255,255,0.4);
+}
+#update-banner .update-dismiss {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+#update-banner .update-dismiss:hover {
+  opacity: 1;
+}
 
 /* ===== Tide Mini Chart ===== */
 .tide-chart {
