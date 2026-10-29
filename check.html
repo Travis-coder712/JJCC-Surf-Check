@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surf Check Diagnostics</title>
+  <style>
+    :root { --bg: #f6f8fa; --fg: #1a1a2e; --muted: #5a6a7a; --line: #dde3ea; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0f141a; --fg: #e6edf3; --muted: #8b98a5; --line: #26303a; } }
+    body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 14px/1.45 -apple-system, BlinkMacSystemFont, sans-serif; }
+    h1 { font-size: 1.2rem; margin: 0 0 4px; } h2 { font-size: 1rem; margin: 24px 0 8px; }
+    p { color: var(--muted); margin: 4px 0 12px; }
+    select { font: inherit; padding: 4px 8px; margin-right: 8px; }
+    .wrap { overflow-x: auto; }
+    table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 12.5px; white-space: nowrap; }
+    th, td { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: right; }
+    th { position: sticky; top: 0; background: var(--bg); text-align: right; }
+    td:first-child, th:first-child { text-align: left; }
+    .lim { font-weight: 700; text-decoration: underline; }
+    .b { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  </style>
+</head>
+<body>
+  <h1>Surf Check: diagnostics</h1>
+  <p>Every input and factor behind the rating, in 15-minute slots. The underlined factor is the one limiting the rating. Use this to sanity-check a rating against what you saw in the water.</p>
+  <div>
+    <select id="spot"></select>
+    <select id="day"></select>
+    <select id="mode"><option>surfer</option><option>logger</option><option>family</option></select>
+  </div>
+  <h2>Observed vs model wind (Aireys Inlet)</h2>
+  <div class="wrap" id="obs"><p>Loading…</p></div>
+  <h2>Slots</h2>
+  <div class="wrap" id="slots"><p>Loading…</p></div>
+
+  <script src="engine/config.js"></script>
+  <script src="engine/spots.js"></script>
+  <script src="engine/tides.js"></script>
+  <script src="engine/surf.js"></script>
+  <script>
+    const E = SurfEngine;
+    const COLORS = { flat: '#cbd5e1', poor: '#ef4444', 'poor-fair': '#f59e0b', fair: '#eab308', good: '#84cc16', 'very-good': '#22c55e', epic: '#0ea5e9' };
+    let fc, obs;
+    const $ = id => document.getElementById(id);
+    const f2 = v => v.toFixed(2);
+
+    function renderObs() {
+      if (!obs) { $('obs').innerHTML = '<p>No observations: deploy worker/bom-obs.js and set OBS_URL in engine/config.js.</p>'; return; }
+      const nc = fc.nowcast; fc.nowcast = null; // compare against the raw model
+      const rows = obs.history.map(o => {
+        const c = E.conditions(fc, E.SPOTS.find(s => s.windArea === 'aireys'), o.t);
+        if (!c) return '';
+        return `<tr><td>${E.fmtTime(o.t)}</td><td>${o.dirText} ${o.spd} (g${o.gust})</td><td>${E.compass(c.wind.dir)} ${c.wind.spd.toFixed(0)} (g${c.wind.gust.toFixed(0)})</td><td>${o.dir == null ? '–' : E.angleDiff(o.dir, c.wind.dir).toFixed(0) + '°'}</td><td>${(c.wind.spd - o.spd).toFixed(1)}</td></tr>`;
+      }).join('');
+      fc.nowcast = nc;
+      $('obs').innerHTML = `<table><tr><th>Time</th><th>Observed km/h</th><th>Model km/h</th><th>Dir error</th><th>Speed bias</th></tr>${rows}</table>`;
+    }
+
+    function renderSlots() {
+      const spot = E.SPOTS.find(s => s.id === $('spot').value);
+      const d = E.spotDay(fc, spot, $('day').value, $('mode').value, 0);
+      const keys = ['size', 'wind', 'tide', 'period', 'suit'];
+      const rows = d.slots.map(({ c, r }) => `<tr>
+        <td>${E.fmtTime(c.t)}</td>
+        <td><span class="b" style="background:${COLORS[r.bandKey]}"></span>${r.label}</td><td>${r.score.toFixed(1)}</td>
+        <td>${c.surf.face.toFixed(2)}</td>
+        <td>${c.surf.parts.map(p => `${p.kind[0]}:${p.h.toFixed(1)}@${Math.round(p.p)}s ${E.compass(p.d)}→${p.face.toFixed(2)}`).join(' ')}</td>
+        <td>${E.compass(c.wind.dir)} ${c.wind.spd.toFixed(0)}/${c.wind.gust.toFixed(0)}${c.wind.nowcast ? '*' : ''}</td><td>${c.wind.rel.toFixed(0)}° ${c.wind.kind}</td>
+        <td>${c.tide.h.toFixed(2)} ${c.tide.stage}${c.tide.rising ? '↑' : '↓'}</td>
+        ${keys.map(k => `<td class="${r.limiting === k ? 'lim' : ''}">${f2(r.factors[k])}</td>`).join('')}
+      </tr>`).join('');
+      $('slots').innerHTML = `<table><tr><th>Time</th><th>Rating</th><th>/10</th><th>Face m</th><th>Partitions (Hs@T dir→face)</th><th>Wind spd/gust</th><th>vs offshore</th><th>Tide m</th>${keys.map(k => `<th>${k}</th>`).join('')}</tr>${rows}</table>
+        <p>${d.windows.length ? d.windows.map(w => `Fair+ ${E.fmtTime(w.start)}–${E.fmtTime(w.end)}, best ${E.fmtTime(w.prime.start)}–${E.fmtTime(w.prime.end)}, ends: ${w.endReason.text}`).join('<br>') : 'No Fair+ window.'}</p>
+        <p>* wind nudged toward the latest observation.</p>`;
+    }
+
+    (async () => {
+      SurfTides.load(await (await fetch('data/tides.json')).json());
+      [fc, obs] = await Promise.all([E.fetchForecast(), E.fetchObs(SurfConfig.OBS_URL).catch(() => null)]);
+      E.attachObs(fc, obs);
+      $('spot').innerHTML = E.SPOTS.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+      $('day').innerHTML = E.forecastDays(fc).map(k => `<option value="${k}">${E.fmtDay(Date.parse(k + 'T12:00:00+10:00'))}</option>`).join('');
+      $('spot').value = 'jan-juc';
+      ['spot', 'day', 'mode'].forEach(id => $(id).onchange = renderSlots);
+      renderObs(); renderSlots();
+    })().catch(err => { $('slots').innerHTML = `<p>Error: ${err.message}</p>`; });
+  </script>
+</body>
+</html>

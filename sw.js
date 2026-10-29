@@ -1,9 +1,14 @@
-const CACHE_NAME = 'surf-check-v14';
+const CACHE_NAME = 'surf-check-v15';
 const STATIC_ASSETS = [
   '/JJCC-Surf-Check/',
   '/JJCC-Surf-Check/index.html',
   '/JJCC-Surf-Check/style.css',
   '/JJCC-Surf-Check/app.js',
+  '/JJCC-Surf-Check/engine/config.js',
+  '/JJCC-Surf-Check/engine/spots.js',
+  '/JJCC-Surf-Check/engine/tides.js',
+  '/JJCC-Surf-Check/engine/surf.js',
+  '/JJCC-Surf-Check/data/tides.json',
   '/JJCC-Surf-Check/manifest.json',
 ];
 

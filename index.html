@@ -82,10 +82,10 @@
         </h2>
         <div class="section-actions">
           <button class="scoring-btn" onclick="openScoringGuide()" aria-label="Scoring guide">
-            <span>📖</span> Scoring Guide
+            Method & sources
           </button>
           <button class="scoring-btn" onclick="openScoringModal()" aria-label="How ratings work">
-            <span>ℹ️</span> Quick Summary
+            How ratings work
           </button>
         </div>
       </div>
@@ -109,11 +109,11 @@
       <h2 class="section-title">
         <span class="section-icon">🗺️</span> Surf Map
       </h2>
-      <p class="section-subtitle">Tap a marker to explore any beach.</p>
+      <p class="section-subtitle">Rated for right now. Tap a marker for the spot's full read-out.</p>
       <div class="map-legend">
-        <span class="legend-item"><span class="legend-dot green"></span> Great</span>
-        <span class="legend-item"><span class="legend-dot yellow"></span> Fair</span>
-        <span class="legend-item"><span class="legend-dot red"></span> Poor</span>
+        <span class="legend-item"><span class="legend-dot green"></span> Good+</span>
+        <span class="legend-item"><span class="legend-dot yellow"></span> Poor–Fair / Fair</span>
+        <span class="legend-item"><span class="legend-dot red"></span> Flat / Poor</span>
       </div>
       <div id="map" class="map-container"></div>
     </section>
@@ -156,7 +156,7 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p>Data from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>. Tide estimates are approximate.</p>
+      <p>Waves &amp; wind: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (Météo-France MFWAM, ECMWF). Tides &amp; observations: <a href="http://www.bom.gov.au/australia/tides/" target="_blank" rel="noopener">Bureau of Meteorology</a> (Point Lonsdale).</p>
       <p>Always check local conditions, swim between the flags, and respect the ocean.</p>
       <p class="footer-updated" id="last-updated"></p>
       <p class="footer-version" id="app-version"></p>
@@ -165,6 +165,10 @@
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="engine/config.js"></script>
+  <script src="engine/spots.js"></script>
+  <script src="engine/tides.js"></script>
+  <script src="engine/surf.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
