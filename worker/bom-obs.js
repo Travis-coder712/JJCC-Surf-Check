@@ -4,7 +4,7 @@
 // directly. This proxies a fixed allow-list of stations, trims the payload,
 // and caches for 10 minutes (BOM updates every 30 min).
 //
-// Deploy: Cloudflare dashboard → Workers → Create → paste this file → Deploy.
+// Deploy: cd worker && npx wrangler deploy  (live at surf-check-bom-obs.travishughes-836.workers.dev)
 // Then put the worker URL in engine/config.js (OBS_URL).
 //
 //   GET /            → Aireys Inlet (default)
